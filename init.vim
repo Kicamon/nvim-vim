@@ -7,6 +7,59 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
+call plug#begin('~/.config/nvim/plugged')
+" 代码
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'honza/vim-snippets'
+" cpp高亮方案
+Plug 'octol/vim-cpp-enhanced-highlight'
+" 一键注释
+Plug 'preservim/nerdcommenter'
+" 格式化
+Plug 'vim-autoformat/vim-autoformat'
+" 前端
+Plug 'ap/vim-css-color'
+" markdown
+Plug 'preservim/vim-markdown'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'mzlogin/vim-markdown-toc'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+Plug 'ferrine/md-img-paste.vim'
+
+" 美化
+" 起始页面
+Plug 'mhinz/vim-startify'
+" lines
+Plug 'Yggdroot/indentLine'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mg979/vim-xtabline'
+" 配色
+Plug 'tanvirtin/monokai.nvim'
+" 小图标
+Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
+" 彩虹括号
+Plug 'luochen1990/rainbow'
+
+" 常用工具
+" 快捷选中文本
+Plug 'gcmt/wildfire.vim'
+" 搜索文件
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+" sudo
+Plug 'lambdalisue/suda.vim'
+" git
+Plug 'lewis6991/gitsigns.nvim'
+" 多光标
+Plug 'mg979/vim-visual-multi'
+Plug 'terryma/vim-multiple-cursors'
+call plug#end()
+
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+
 "====================================
 "===  Basic setting for vim use   ===
 "====================================
@@ -139,52 +192,6 @@ source ~/.config/nvim/opapp.vim
 "=== Plug config ====================
 "====================================
 
-call plug#begin('~/.config/nvim/plugged')
-" 代码
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'honza/vim-snippets'
-" cpp高亮方案
-Plug 'octol/vim-cpp-enhanced-highlight'
-" 一键注释
-Plug 'preservim/nerdcommenter'
-" 格式化
-Plug 'vim-autoformat/vim-autoformat'
-" 前端
-Plug 'ap/vim-css-color'
-" markdown
-Plug 'preservim/vim-markdown'
-Plug 'dhruvasagar/vim-table-mode'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'ferrine/md-img-paste.vim'
-
-" 美化
-" 起始页面
-Plug 'mhinz/vim-startify'
-" lines
-Plug 'Yggdroot/indentLine'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'mg979/vim-xtabline'
-" 配色
-Plug 'tanvirtin/monokai.nvim'
-" 小图标
-Plug 'ryanoasis/vim-devicons'
-" 彩虹括号
-Plug 'luochen1990/rainbow'
-
-" 常用工具
-" 快捷选中文本
-Plug 'gcmt/wildfire.vim'
-" 搜索文件
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-tree/nvim-web-devicons'
-" sudo
-Plug 'lambdalisue/suda.vim'
-" git
-Plug 'lewis6991/gitsigns.nvim'
-call plug#end()
 "-----markdown-----
 let g:mkdp_browser='chromium'
 let g:table_mode_corner='|'	" 表格
@@ -208,11 +215,6 @@ colorscheme monokai
 colorscheme monokai_pro
 colorscheme monokai_soda
 colorscheme monokai_ristretto
-
-""-----NERDTree-----
-"map <F12> :NERDTreeMirror<CR>
-"map <F12> :NERDTreeToggle<CR>
-
 
 "-----rainbow-----
 " 1. vscode defult 2. author defult 3. vscode show
