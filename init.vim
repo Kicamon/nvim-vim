@@ -54,7 +54,6 @@ Plug 'lambdalisue/suda.vim'
 Plug 'lewis6991/gitsigns.nvim'
 " 多光标
 Plug 'mg979/vim-visual-multi'
-Plug 'terryma/vim-multiple-cursors'
 call plug#end()
 
 let g:loaded_netrw = 1
