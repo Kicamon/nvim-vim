@@ -165,7 +165,7 @@ Plug 'mhinz/vim-startify'
 " 通知
 Plug 'rcarriga/nvim-notify'
 " lines
-Plug 'Yggdroot/indentLine'
+Plug 'shellRaining/hlchunk.nvim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mg979/vim-xtabline'
@@ -213,8 +213,21 @@ require("lspconfig").clangd.setup {
 EOF
 nmap \c :Navbuddy<CR>
 
-" ----indentLine----
-let g:indentLine_char = '┃'
+" -----hlchunk----
+lua << EOF
+require('hlchunk').setup({
+    indent = {
+        chars = { "│", "¦", "┆", "┊", },
+
+        style = {
+            "#8B00FF",
+        },
+    },
+    blank = {
+        enable = false,
+    }
+})
+EOF
 
 "-----markdown-----
 let g:mkdp_browser='chromium'
@@ -279,9 +292,9 @@ let g:startify_custom_header = [
             \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
             \]
 let g:startify_custom_footer = [
-            \ '+------------------------------+',
-            \ '|        Just for Fun!         |',
-            \ '+------------------------------+',
+            \ '╭──────────────────────────────╮',
+            \ '│        Just for Fun!         │',
+            \ '╰──────────────────────────────╯',
             \]
 let g:startify_files_number = 5
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
