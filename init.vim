@@ -7,58 +7,6 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
-call plug#begin('~/.config/nvim/plugged')
-" 代码
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'honza/vim-snippets'
-" cpp高亮方案
-Plug 'octol/vim-cpp-enhanced-highlight'
-" 一键注释
-Plug 'preservim/nerdcommenter'
-" 格式化
-Plug 'vim-autoformat/vim-autoformat'
-" 前端
-Plug 'ap/vim-css-color'
-" markdown
-Plug 'preservim/vim-markdown'
-Plug 'dhruvasagar/vim-table-mode'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'ferrine/md-img-paste.vim'
-
-" 美化
-" 起始页面
-Plug 'mhinz/vim-startify'
-" lines
-Plug 'Yggdroot/indentLine'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'mg979/vim-xtabline'
-" 配色
-Plug 'tanvirtin/monokai.nvim'
-" 小图标
-Plug 'ryanoasis/vim-devicons'
-Plug 'nvim-tree/nvim-web-devicons'
-" 彩虹括号
-Plug 'luochen1990/rainbow'
-
-" 常用工具
-" 快捷选中文本
-Plug 'gcmt/wildfire.vim'
-" 搜索文件
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-" sudo
-Plug 'lambdalisue/suda.vim'
-" git
-Plug 'lewis6991/gitsigns.nvim'
-" 多光标
-Plug 'mg979/vim-visual-multi'
-call plug#end()
-
-let g:loaded_netrw = 1
-let g:loaded_netrwPlugin = 1
-
 "====================================
 "===  Basic setting for vim use   ===
 "====================================
@@ -83,6 +31,7 @@ let g:terminal_color_11 = '#F4F99D'
 let g:terminal_color_12 = '#CAA9FA'
 let g:terminal_color_13 = '#FF92D0'
 let g:terminal_color_14 = '#9AEDFE'
+highlight NotifyBackground guibg=#000000
 " 基本高亮
 syntax on
 " 行号显示与相对行号
@@ -130,6 +79,7 @@ hi NormalFloat guifg=LightGreen guibg=Green
 map  <F5>  :w<CR>:call Run()<CR>
 imap <F5>  <ESC>:w<CR>:call Run()<CR>
 func! Run()
+    :lua require("notify")("code run")
     if &filetype == 'c'
         set splitbelow
         :sp
@@ -184,12 +134,87 @@ autocmd InsertEnter * call Fcitx2zh()
 source ~/.config/nvim/md-snippets.vim
 "num-key
 source ~/.config/nvim/num-key.vim
-" 打开app
-source ~/.config/nvim/opapp.vim
+
+call plug#begin('~/.config/nvim/plugged')
+" 代码
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'honza/vim-snippets'
+Plug 'neovim/nvim-lspconfig'
+Plug 'SmiteshP/nvim-navic'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'numToStr/Comment.nvim'
+Plug 'SmiteshP/nvim-navbuddy'
+Plug 'iamcco/vim-language-server'
+" cpp高亮方案
+Plug 'octol/vim-cpp-enhanced-highlight' " 一键注释
+Plug 'preservim/nerdcommenter'
+" 格式化
+Plug 'vim-autoformat/vim-autoformat'
+" 前端
+Plug 'ap/vim-css-color'
+" markdown
+Plug 'preservim/vim-markdown'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'mzlogin/vim-markdown-toc'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+Plug 'ferrine/md-img-paste.vim'
+
+" 美化
+" 起始页面
+Plug 'mhinz/vim-startify'
+" 通知
+Plug 'rcarriga/nvim-notify'
+" lines
+Plug 'Yggdroot/indentLine'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mg979/vim-xtabline'
+Plug 'rebelot/heirline.nvim'
+" 配色
+Plug 'tanvirtin/monokai.nvim'
+" 小图标
+Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
+" 彩虹括号
+Plug 'luochen1990/rainbow'
+
+" 常用工具
+" 快捷选中文本
+Plug 'gcmt/wildfire.vim'
+" 搜索文件
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+" tree
+Plug 'nvim-neo-tree/neo-tree.nvim'
+Plug 'MunifTanjim/nui.nvim'
+" sudo
+Plug 'lambdalisue/suda.vim'
+" git
+Plug 'lewis6991/gitsigns.nvim'
+" 多光标
+Plug 'mg979/vim-visual-multi'
+call plug#end()
+
+
 
 "====================================
 "=== Plug config ====================
 "====================================
+
+" check function
+lua <<EOF
+local navbuddy = require("nvim-navbuddy")
+
+require("lspconfig").clangd.setup {
+    on_attach = function(client, bufnr)
+        navbuddy.attach(client, bufnr)
+    end
+}
+EOF
+nmap \c :Navbuddy<CR>
+
+" ----indentLine----
+let g:indentLine_char = '┃'
 
 "-----markdown-----
 let g:mkdp_browser='chromium'
@@ -273,7 +298,6 @@ let g:coc_global_extensions = [
         \ 'coc-highlight',
         \ 'coc-css',
         \ 'coc-json',
-        \ 'coc-explorer'
       \ ]
 set helpfile
 set nobackup
@@ -311,7 +335,6 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
-nmap <F12> :CocCommand explorer<CR>
 
 "-----vim-cpp-enhanced-highlight-----
 let g:cpp_class_scope_highlight = 1
@@ -350,6 +373,10 @@ nnoremap <leader>fg :Telescope grep_string<CR>
 "-----suda.vim-----
 cnoreabbrev sw w suda://%
 
+" ----tree----
+let g:neo_tree_remove_legacy_commands = 1
+nmap <F12> :Neotree<CR>
+
 "-----airline----
 let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts = 1
@@ -367,7 +394,6 @@ let g:xtabline_settings.last_open_first = 1
 let g:xtabline_settings.theme='slate'
 noremap to :XTabCycleMode<CR>
 noremap \p :echo expand('%:p')<CR>
-
 
 "-----gitsigns.nvim-----
 lua <<EOF
