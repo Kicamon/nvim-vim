@@ -79,7 +79,7 @@ hi NormalFloat guifg=LightGreen guibg=Green
 map  <F5>  :w<CR>:call Run()<CR>
 imap <F5>  <ESC>:w<CR>:call Run()<CR>
 func! Run()
-    :lua require("notify")("code run")
+    :lua require("notify")(" code running")
     if &filetype == 'c'
         set splitbelow
         :sp
@@ -145,8 +145,10 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'SmiteshP/nvim-navbuddy'
 Plug 'iamcco/vim-language-server'
+Plug 'xeluxee/competitest.nvim'
 " cpp高亮方案
-Plug 'octol/vim-cpp-enhanced-highlight' " 一键注释
+Plug 'octol/vim-cpp-enhanced-highlight'
+" 一键注释
 Plug 'preservim/nerdcommenter'
 " 格式化
 Plug 'vim-autoformat/vim-autoformat'
@@ -200,104 +202,6 @@ call plug#end()
 "====================================
 "=== Plug config ====================
 "====================================
-
-" check function
-lua <<EOF
-local navbuddy = require("nvim-navbuddy")
-
-require("lspconfig").clangd.setup {
-    on_attach = function(client, bufnr)
-        navbuddy.attach(client, bufnr)
-    end
-}
-EOF
-nmap \c :Navbuddy<CR>
-
-" -----hlchunk----
-lua << EOF
-require('hlchunk').setup({
-    indent = {
-        chars = { "│", "¦", "┆", "┊", },
-
-        style = {
-            "#8B00FF",
-        },
-    },
-    blank = {
-        enable = false,
-    }
-})
-EOF
-
-"-----markdown-----
-let g:mkdp_browser='chromium'
-let g:table_mode_corner='|'	" 表格
-command TMR TableModeRealign
-command TOC GenTocGitLab
-" markdown文件中的conceal
-" 基本
-let g:vim_markdown_conceal=0
-" 代码块
-let g:vim_markdown_conceal_code_blocks = 0
-" latex数学公式
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
-" 关闭折叠
-let g:vim_markdown_folding_disabled = 1
-" 让其他类型文件遵循上列标准
-let g:vim_markdown_auto_extension_ext = 'txt'
-
-" 配色
-colorscheme monokai
-colorscheme monokai_pro
-colorscheme monokai_soda
-colorscheme monokai_ristretto
-
-"-----rainbow-----
-" 1. vscode defult 2. author defult 3. vscode show
-"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
-"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- let g:rainbow_conf = {
- \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
- \	'operators': '_,_',
- \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
- \	'separately': {
- \		'*': {},
- \		'tex': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
- \		},
- \		'lisp': {
- \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
- \		},
- \		'vim': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
- \		},
- \		'html': {
- \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
- \		},
- \		'css': 0,
- \	}
- \}
-let g:rainbow_active = 1
-
-"-----vim-startify-----
-let g:startify_custom_header = [
-            \ ' █████╗  ██████╗███╗   ███╗███████╗██████╗ ',
-            \ '██╔══██╗██╔════╝████╗ ████║██╔════╝██╔══██╗',
-            \ '███████║██║     ██╔████╔██║█████╗  ██████╔╝',
-            \ '██╔══██║██║     ██║╚██╔╝██║██╔══╝  ██╔══██╗',
-            \ '██║  ██║╚██████╗██║ ╚═╝ ██║███████╗██║  ██║',
-            \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
-            \]
-let g:startify_custom_footer = [
-            \ '╭──────────────────────────────╮',
-            \ '│        Just for Fun!         │',
-            \ '╰──────────────────────────────╯',
-            \]
-let g:startify_files_number = 5
-let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
 "-----coc.nvim-----
 let g:coc_global_extensions = [
@@ -379,16 +283,81 @@ func! AutoFormat()
     endif
 endfunction
 
-"-----telescope.nvim-----
-nnoremap <leader>ff :Telescope find_files<CR>
-nnoremap <leader>fg :Telescope grep_string<CR>
+"-----check function-----
+lua <<EOF
+local navbuddy = require("nvim-navbuddy")
 
-"-----suda.vim-----
-cnoreabbrev sw w suda://%
+require("lspconfig").clangd.setup {
+    on_attach = function(client, bufnr)
+        navbuddy.attach(client, bufnr)
+    end
+}
+EOF
+nmap \c :Navbuddy<CR>
 
-" ----tree----
-let g:neo_tree_remove_legacy_commands = 1
-nmap <F12> :Neotree<CR>
+"----competitest----
+lua require('competitest').setup()
+nmap rr :CompetiTestRun<CR>
+nmap ra :CompetiTestAdd<CR>
+nmap ri :CompetiTestReceive testcases<CR>
+nmap rd :call Delete()<CR>
+func! Delete()
+    :lua require("notify")("󰆴 text delete")
+    tabe
+    term rm -f ./%< ./%<_*
+    tabclose
+endfunction
+
+"-----markdown-----
+let g:mkdp_browser='chromium'
+let g:table_mode_corner='|'	" 表格
+command TMR TableModeRealign
+command TOC GenTocGitLab
+" markdown文件中的conceal
+" 基本
+let g:vim_markdown_conceal=0
+" 代码块
+let g:vim_markdown_conceal_code_blocks = 0
+" latex数学公式
+let g:tex_conceal = ""
+let g:vim_markdown_math = 1
+" 关闭折叠
+let g:vim_markdown_folding_disabled = 1
+" 让其他类型文件遵循上列标准
+let g:vim_markdown_auto_extension_ext = 'txt'
+
+"-----vim-startify-----
+let g:startify_custom_header = [
+            \ ' █████╗  ██████╗███╗   ███╗███████╗██████╗ ',
+            \ '██╔══██╗██╔════╝████╗ ████║██╔════╝██╔══██╗',
+            \ '███████║██║     ██╔████╔██║█████╗  ██████╔╝',
+            \ '██╔══██║██║     ██║╚██╔╝██║██╔══╝  ██╔══██╗',
+            \ '██║  ██║╚██████╗██║ ╚═╝ ██║███████╗██║  ██║',
+            \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
+            \]
+let g:startify_custom_footer = [
+            \ '╭──────────────────────────────╮',
+            \ '│        Just for Fun!         │',
+            \ '╰──────────────────────────────╯',
+            \]
+let g:startify_files_number = 5
+let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
+
+" -----hlchunk----
+lua << EOF
+require('hlchunk').setup({
+    indent = {
+        chars = { "│", "¦", "┆", "┊", },
+
+        style = {
+            "#8B00FF",
+        },
+    },
+    blank = {
+        enable = false,
+    }
+})
+EOF
 
 "-----airline----
 let g:airline_theme='bubblegum'
@@ -407,6 +376,52 @@ let g:xtabline_settings.last_open_first = 1
 let g:xtabline_settings.theme='slate'
 noremap to :XTabCycleMode<CR>
 noremap \p :echo expand('%:p')<CR>
+
+"----配色----
+colorscheme monokai
+colorscheme monokai_pro
+colorscheme monokai_soda
+colorscheme monokai_ristretto
+
+"-----rainbow-----
+" 1. vscode defult 2. author defult 3. vscode show
+"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
+"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ let g:rainbow_conf = {
+ \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+ \	'operators': '_,_',
+ \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+ \	'separately': {
+ \		'*': {},
+ \		'tex': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+ \		},
+ \		'lisp': {
+ \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+ \		},
+ \		'vim': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+ \		},
+ \		'html': {
+ \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+ \		},
+ \		'css': 0,
+ \	}
+ \}
+let g:rainbow_active = 1
+
+"-----telescope.nvim-----
+nnoremap <leader>ff :Telescope find_files<CR>
+nnoremap <leader>fg :Telescope grep_string<CR>
+
+" ----tree----
+let g:neo_tree_remove_legacy_commands = 1
+nmap <F12> :Neotree<CR>
+
+"-----suda.vim-----
+cnoreabbrev sw w suda://%
 
 "-----gitsigns.nvim-----
 lua <<EOF
