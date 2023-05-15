@@ -302,10 +302,8 @@ nmap ra :CompetiTestAdd<CR>
 nmap ri :CompetiTestReceive testcases<CR>
 nmap rd :call Delete()<CR>
 func! Delete()
+    :! rm -f ./%< ./%<_*
     :lua require("notify")("󰆴 text delete")
-    tabe
-    term rm -f ./%< ./%<_*
-    tabclose
 endfunction
 
 "-----markdown-----
