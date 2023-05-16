@@ -3,6 +3,7 @@
 	"coc.preferences.extensionUpdateCheck": "daily",
 	"suggest.noselect": true,
 	"suggest.enablePreselect": false,
+	"disabledFeatures": true,
 	"suggest.completionItemKindLabels": {
 		"class": "\uf0e8",
 		"color": "\ue22b",
@@ -39,5 +40,6 @@
 	"diagnostic.refreshOnInsertMode": false,
 	"diagnostic.checkCurrentLine": true,
 	"diagnostic.virtualTextPrefix": " ❯❯❯ ",
-	"diagnostic.virtualText": false
+	"diagnostic.virtualText": false,
+	"inlayHint.enable": false
 }

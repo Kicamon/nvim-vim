@@ -172,8 +172,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mg979/vim-xtabline'
 Plug 'rebelot/heirline.nvim'
-" 配色
-Plug 'ellisonleao/gruvbox.nvim'
+" theme
+Plug 'tanvirtin/monokai.nvim'
 " 小图标
 Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-web-devicons'
@@ -375,8 +375,11 @@ let g:xtabline_settings.theme='slate'
 noremap to :XTabCycleMode<CR>
 noremap \p :echo expand('%:p')<CR>
 
-"----配色----
-colorscheme gruvbox
+"----theme----
+colorscheme monokai
+colorscheme monokai_pro
+colorscheme monokai_soda
+colorscheme monokai_ristretto
 
 "-----rainbow-----
 " 1. vscode defult 2. author defult 3. vscode show
