@@ -333,7 +333,11 @@ nmap \c :Navbuddy<CR>
 
 "----competitest----
 lua require('competitest').setup()
-nmap rr :CompetiTestRun<CR>
+nmap rr :call Rrun()
+func! Rrun()
+    :lua require("notify")(" code running")
+    :CompetiTestRun<CR>
+endfunction
 nmap ra :CompetiTestAdd<CR>
 nmap ri :CompetiTestReceive testcases<CR>
 nmap rd :call Delete()<CR>

@@ -17,6 +17,7 @@ python支持`pip install neovim`
 - clang（cpp格式化&代码提示）
 - jedi-language-server（python LSP）
 - autopep8（python格式化）
+- js-beautify(js，css，html格式化)
 
 coc.nvim插件使用注意：
 进入`./plugged/coc.nvim`文件，运行命令`yarn install`
