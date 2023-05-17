@@ -75,61 +75,10 @@ imap <A-l> <Right>
 " 浮动窗口配色
 hi NormalFloat guifg=LightGreen guibg=Green
 
-" run code
-map  <F5>  :w<CR>:call Run()<CR>
-imap <F5>  <ESC>:w<CR>:call Run()<CR>
-func! Run()
-    :lua require("notify")(" code running")
-    if &filetype == 'c'
-        set splitbelow
-        :sp
-        term gcc % -o %< && ./%< && rm -f ./%<
-    elseif &filetype == "cpp"
-        set splitbelow
-        :sp
-        term g++ % -std=c++17 -O2 -g -Wall -o %< && ./%< && rm -f ./%<
-    elseif &filetype == "python"
-        set splitbelow
-        :sp
-        term python3 %
-    elseif &filetype == "lua"
-        set splitbelow
-        :sp
-        term lua %
-    elseif &filetype == 'markdown'
-        exec "MarkdownPreview"
-    elseif &filetype == 'html'
-        tabe
-        term live-server --browser=chromium
-        tabclose
-    endif
-endfunction
-
-" fcitx5
-let g:input_toggle = 1
-function! Fcitx2en()
-    let s:input_status = system("fcitx5-remote")
-    if s:input_status == 2
-        let g:input_toggle = 1
-        let l:a = system("fcitx5-remote -c")
-    endif
-endfunction
-
-function! Fcitx2zh()
-    if expand("%:e")== "md"
-        let s:input_status = system("fcitx5-remote")
-        if s:input_status != 2 && g:input_toggle == 1
-            let l:a = system("fcitx5-remote -o")
-            let g:input_toggle = 0
-        endif
-    endif
-endfunction
-set ttimeoutlen=150
-"退出插入模式
-autocmd InsertLeave * call Fcitx2en()
-"进入插入模式
-autocmd InsertEnter * call Fcitx2zh()
-
+"run code
+source ~/.config/nvim/run.vim
+"fcitx5
+source ~/.config/nvim/fcitx.vim
 "md-snippets
 source ~/.config/nvim/md-snippets.vim
 "num-key
@@ -354,6 +303,8 @@ map \a <leader>cu
 let g:formatdef_clangformat_microsoft = '"clang-format -style microsoft -"'
 let g:formatters_cpp = ['clangformat_microsoft']
 let g:formatters_c = ['clangformat_microsoft']
+let g:formatdef_my_html = '"html-beautify -s 2"'
+let g:formatters_html = ['my_html']
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
@@ -393,20 +344,21 @@ endfunction
 
 "-----markdown-----
 let g:mkdp_browser='chromium'
-let g:table_mode_corner='|'	" 表格
+"表格
+let g:table_mode_corner='|'
 command TMR TableModeRealign
 command TOC GenTocGitLab
-" markdown文件中的conceal
-" 基本
+"markdown文件中的conceal
+"基本
 let g:vim_markdown_conceal=0
-" 代码块
+"代码块
 let g:vim_markdown_conceal_code_blocks = 0
-" latex数学公式
+"latex数学公式
 let g:tex_conceal = ""
 let g:vim_markdown_math = 1
-" 关闭折叠
+"关闭折叠
 let g:vim_markdown_folding_disabled = 1
-" 让其他类型文件遵循上列标准
+"让其他类型文件遵循上列标准
 let g:vim_markdown_auto_extension_ext = 'txt'
 
 
