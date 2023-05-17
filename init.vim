@@ -136,7 +136,26 @@ source ~/.config/nvim/md-snippets.vim
 source ~/.config/nvim/num-key.vim
 
 call plug#begin('~/.config/nvim/plugged')
-" 代码
+" butify
+" 起始页面
+Plug 'mhinz/vim-startify'
+" 通知
+Plug 'rcarriga/nvim-notify'
+" lines
+Plug 'shellRaining/hlchunk.nvim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mg979/vim-xtabline'
+Plug 'rebelot/heirline.nvim'
+" theme
+Plug 'tanvirtin/monokai.nvim'
+" 小图标
+Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
+" 彩虹括号
+Plug 'luochen1990/rainbow'
+
+" code
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets'
 Plug 'neovim/nvim-lspconfig'
@@ -160,27 +179,6 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'ferrine/md-img-paste.vim'
-
-" 美化
-" 起始页面
-Plug 'mhinz/vim-startify'
-" 通知
-Plug 'rcarriga/nvim-notify'
-" lines
-Plug 'shellRaining/hlchunk.nvim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'mg979/vim-xtabline'
-Plug 'rebelot/heirline.nvim'
-" theme
-Plug 'tanvirtin/monokai.nvim'
-" 小图标
-Plug 'ryanoasis/vim-devicons'
-Plug 'nvim-tree/nvim-web-devicons'
-" 彩虹括号
-Plug 'luochen1990/rainbow'
-
-" 常用工具
 " 快捷选中文本
 Plug 'gcmt/wildfire.vim'
 " 搜索文件
@@ -203,6 +201,93 @@ call plug#end()
 "=== Plug config ====================
 "====================================
 
+"=====butify=====
+"-----vim-startify-----
+let g:startify_custom_header = [
+            \ ' █████╗  ██████╗███╗   ███╗███████╗██████╗ ',
+            \ '██╔══██╗██╔════╝████╗ ████║██╔════╝██╔══██╗',
+            \ '███████║██║     ██╔████╔██║█████╗  ██████╔╝',
+            \ '██╔══██║██║     ██║╚██╔╝██║██╔══╝  ██╔══██╗',
+            \ '██║  ██║╚██████╗██║ ╚═╝ ██║███████╗██║  ██║',
+            \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
+            \]
+let g:startify_custom_footer = [
+            \ '╭──────────────────────────────╮',
+            \ '│        Just for Fun!         │',
+            \ '╰──────────────────────────────╯',
+            \]
+let g:startify_files_number = 5
+let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
+
+" -----hlchunk----
+lua << EOF
+require('hlchunk').setup({
+    indent = {
+        chars = { "│", "¦", "┆", "┊", },
+
+        style = {
+            "#8B00FF",
+        },
+    },
+    blank = {
+        enable = false,
+    }
+})
+EOF
+
+"-----airline----
+let g:airline_theme='bubblegum'
+let g:airline_powerline_fonts = 1
+" 开启tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+
+"-----xtabline----
+let g:xtabline_settings = {}
+let g:xtabline_settings.enable_mappings = 0
+let g:xtabline_settings.tabline_modes = ['buffers']
+let g:xtabline_settings.enable_persistance = 0
+let g:xtabline_settings.last_open_first = 1
+let g:xtabline_settings.theme='slate'
+noremap to :XTabCycleMode<CR>
+
+"----theme----
+colorscheme monokai
+colorscheme monokai_pro
+colorscheme monokai_soda
+colorscheme monokai_ristretto
+
+"-----rainbow-----
+" 1. vscode defult 2. author defult 3. vscode show
+"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
+"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ let g:rainbow_conf = {
+ \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+ \	'operators': '_,_',
+ \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+ \	'separately': {
+ \		'*': {},
+ \		'tex': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+ \		},
+ \		'lisp': {
+ \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+ \		},
+ \		'vim': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+ \		},
+ \		'html': {
+ \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+ \		},
+ \		'css': 0,
+ \	}
+ \}
+let g:rainbow_active = 1
+
+" =====code=====
 "-----coc.nvim-----
 let g:coc_global_extensions = [
         \ 'coc-clangd',
@@ -262,7 +347,7 @@ let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
-map \\ <leader>cc
+map \p <leader>cc
 map \a <leader>cu
 
 "-----vim-autoformat-----
@@ -324,91 +409,6 @@ let g:vim_markdown_folding_disabled = 1
 " 让其他类型文件遵循上列标准
 let g:vim_markdown_auto_extension_ext = 'txt'
 
-"-----vim-startify-----
-let g:startify_custom_header = [
-            \ ' █████╗  ██████╗███╗   ███╗███████╗██████╗ ',
-            \ '██╔══██╗██╔════╝████╗ ████║██╔════╝██╔══██╗',
-            \ '███████║██║     ██╔████╔██║█████╗  ██████╔╝',
-            \ '██╔══██║██║     ██║╚██╔╝██║██╔══╝  ██╔══██╗',
-            \ '██║  ██║╚██████╗██║ ╚═╝ ██║███████╗██║  ██║',
-            \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
-            \]
-let g:startify_custom_footer = [
-            \ '╭──────────────────────────────╮',
-            \ '│        Just for Fun!         │',
-            \ '╰──────────────────────────────╯',
-            \]
-let g:startify_files_number = 5
-let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
-
-" -----hlchunk----
-lua << EOF
-require('hlchunk').setup({
-    indent = {
-        chars = { "│", "¦", "┆", "┊", },
-
-        style = {
-            "#8B00FF",
-        },
-    },
-    blank = {
-        enable = false,
-    }
-})
-EOF
-
-"-----airline----
-let g:airline_theme='bubblegum'
-let g:airline_powerline_fonts = 1
-" 开启tabline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-
-"-----xtabline----
-let g:xtabline_settings = {}
-let g:xtabline_settings.enable_mappings = 0
-let g:xtabline_settings.tabline_modes = ['buffers']
-let g:xtabline_settings.enable_persistance = 0
-let g:xtabline_settings.last_open_first = 1
-let g:xtabline_settings.theme='slate'
-noremap to :XTabCycleMode<CR>
-noremap \p :echo expand('%:p')<CR>
-
-"----theme----
-colorscheme monokai
-colorscheme monokai_pro
-colorscheme monokai_soda
-colorscheme monokai_ristretto
-
-"-----rainbow-----
-" 1. vscode defult 2. author defult 3. vscode show
-"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
-"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- let g:rainbow_conf = {
- \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
- \	'operators': '_,_',
- \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
- \	'separately': {
- \		'*': {},
- \		'tex': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
- \		},
- \		'lisp': {
- \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
- \		},
- \		'vim': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
- \		},
- \		'html': {
- \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
- \		},
- \		'css': 0,
- \	}
- \}
-let g:rainbow_active = 1
 
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>

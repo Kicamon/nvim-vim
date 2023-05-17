@@ -2,6 +2,10 @@
 
 ## 使用之前
 使用的插件管理器：[vim-plug](https://github.com/junegunn/vim-plug)
+如果是arch linux，运行命令`sudo pacman -S neovim-plug`
+
+python支持`pip install neovim`
+
 
 使用前先根据使用的操作系统进行安装
 
@@ -138,7 +142,6 @@ endsnippet
 ```
 
 之后在写代码的过程中输入`acm` 就会出现基本模板的代码补全
-
 
 ## Markdown
 #### 指定浏览器
