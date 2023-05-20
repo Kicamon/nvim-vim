@@ -1,6 +1,9 @@
 # My neovim profile
 
 ## 使用之前
+如果是arch系linux用户的话，直接运行usr文件夹里的install.sh即可自动安装好所有要求的环境
+`source ~/.config/nvim/usr/install.sh`
+
 使用的插件管理器：[vim-plug](https://github.com/junegunn/vim-plug)
 如果是arch linux，运行命令`sudo pacman -S neovim-plug`
 
@@ -9,8 +12,7 @@ python支持`pip install neovim`
 
 使用前先根据使用的操作系统进行安装
 
-插件环境要求（一定要先安装这些环境）：
-- nodejs >= 14.14.0
+插件环境要求（一定要先安装这些环境）： - nodejs >= 14.14.0
 - python >= 3.10.0
 - yarn
 - npm
@@ -70,19 +72,30 @@ coc.nvim插件使用注意：
 |  编译运行  |  \<F5> |
 | 自动格式化 | Ctrl+i |
 
-##### cpp/c
-我所使用的是Microsoft的码风，如果想要换成Google的码风的话，找到这两行
+##### 自动格式化
 ```Vim Script
-let g:formatdef_clangformat_microsoft = '"clang-format -style microsoft -"'
-let g:formatters_cpp = ['clangformat_microsoft' ]
-let g:formatters_c = ['clangformat_microsoft' ]
+call autoformat#config('cpp', 
+	\ ['clang-format -style microsoft -']) 
+call autoformat#config('python', 
+	\ ['autopep8 -'])
+call autoformat#config('html', 
+    \ ['html-beautify -s 2'])
+autocmd! BufWritePre * :Autoformat
+nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
+inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
+func! AutoFormat()
+    :lua require("notify")("󰉡 success format")
+    if &filetype == "markdown"
+        :TableModeEnable
+    else
+        :Autoformat
+    endif
+endfunction
 ```
 
-换成：
-```Vim Script
-let g:formatdef_clangformat_google = '"clang-format -style google -"'
-let g:formatters_cpp = ['clangformat_google']
-let g:formatters_c = ['clangformat_google']
+##### c/cpp
+```shell
+sudo pacman -S clang
 ```
 
 ##### python

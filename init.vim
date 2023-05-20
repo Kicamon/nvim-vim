@@ -85,7 +85,7 @@ source ~/.config/nvim/num-key.vim
 "====plugin management====
 call plug#begin('~/.config/nvim/plugged')
 " code
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'honza/vim-snippets'
 Plug 'neovim/nvim-lspconfig'
 Plug 'SmiteshP/nvim-navic'
