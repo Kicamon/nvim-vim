@@ -16,6 +16,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set t_CO=256
 silent! color deus
 hi NonText ctermfg=gray guifg=grey10
+hi NormalFloat guifg=LightGreen guibg=Green
 let g:terminal_color_0  = '#000000'
 let g:terminal_color_1  = '#FF5555'
 let g:terminal_color_2  = '#50FA7B'
@@ -46,7 +47,6 @@ set shiftwidth=4
 set softtabstop=4
 set autoindent
 set smartindent
-set termguicolors
 " 忽略大小而写
 set ignorecase
 " 高亮本行
@@ -72,8 +72,6 @@ set listchars=tab:▸\ ,trail:▫
 set wildmenu
 " insert模式下右移
 imap <A-l> <Right>
-" 浮动窗口配色
-hi NormalFloat guifg=LightGreen guibg=Green
 
 "run code
 source ~/.config/nvim/run.vim
@@ -84,7 +82,48 @@ source ~/.config/nvim/md-snippets.vim
 "num-key
 source ~/.config/nvim/num-key.vim
 
+"====plugin management====
 call plug#begin('~/.config/nvim/plugged')
+" code
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'honza/vim-snippets'
+Plug 'neovim/nvim-lspconfig'
+Plug 'SmiteshP/nvim-navic'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'numToStr/Comment.nvim'
+Plug 'SmiteshP/nvim-navbuddy'
+Plug 'iamcco/vim-language-server'
+Plug 'xeluxee/competitest.nvim'
+" cpp高亮方案
+Plug 'octol/vim-cpp-enhanced-highlight'
+" 一键注释
+Plug 'preservim/nerdcommenter'
+" 格式化
+Plug 'akarl/autoformat.nvim'
+" 前端
+Plug 'ap/vim-css-color'
+" markdown
+Plug 'preservim/vim-markdown'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'mzlogin/vim-markdown-toc'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+Plug 'ferrine/md-img-paste.vim'
+" 快捷选中文本
+Plug 'gcmt/wildfire.vim'
+" 快捷修改包裹符号
+Plug 'tpope/vim-surround'
+" 搜索文件
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+" tree
+Plug 'nvim-neo-tree/neo-tree.nvim'
+" sudo
+Plug 'lambdalisue/suda.vim'
+" git
+Plug 'lewis6991/gitsigns.nvim'
+" 多光标
+Plug 'mg979/vim-visual-multi'
+
 " butify
 " 起始页面
 Plug 'mhinz/vim-startify'
@@ -103,45 +142,6 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-web-devicons'
 " 彩虹括号
 Plug 'luochen1990/rainbow'
-
-" code
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'honza/vim-snippets'
-Plug 'neovim/nvim-lspconfig'
-Plug 'SmiteshP/nvim-navic'
-Plug 'MunifTanjim/nui.nvim'
-Plug 'numToStr/Comment.nvim'
-Plug 'SmiteshP/nvim-navbuddy'
-Plug 'iamcco/vim-language-server'
-Plug 'xeluxee/competitest.nvim'
-" cpp高亮方案
-Plug 'octol/vim-cpp-enhanced-highlight'
-" 一键注释
-Plug 'preservim/nerdcommenter'
-" 格式化
-Plug 'vim-autoformat/vim-autoformat'
-" 前端
-Plug 'ap/vim-css-color'
-" markdown
-Plug 'preservim/vim-markdown'
-Plug 'dhruvasagar/vim-table-mode'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'ferrine/md-img-paste.vim'
-" 快捷选中文本
-Plug 'gcmt/wildfire.vim'
-" 搜索文件
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-" tree
-Plug 'nvim-neo-tree/neo-tree.nvim'
-Plug 'MunifTanjim/nui.nvim'
-" sudo
-Plug 'lambdalisue/suda.vim'
-" git
-Plug 'lewis6991/gitsigns.nvim'
-" 多光标
-Plug 'mg979/vim-visual-multi'
 call plug#end()
 
 
@@ -189,8 +189,8 @@ let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts = 1
 " 开启tabline
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+"let g:airline#extensions#tabline#left_sep = ' '
+"let g:airline#extensions#tabline#left_alt_sep = '|'
 
 "-----xtabline----
 let g:xtabline_settings = {}
@@ -281,6 +281,7 @@ function! ShowDocumentation()
   endif
 endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
+nmap <leader>rn <Plug>(coc-rename)
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
 
@@ -296,19 +297,18 @@ let g:cpp_concepts_highlight = 1
 map \p <leader>cc
 map \a <leader>cu
 
-"-----vim-autoformat-----
-let g:formatdef_clangformat_microsoft = '"clang-format -style microsoft -"'
-let g:formatters_cpp = ['clangformat_microsoft']
-let g:formatters_c = ['clangformat_microsoft']
-let g:formatdef_my_html = '"html-beautify -s 2"'
-let g:formatters_html = ['my_html']
-let g:autoformat_autoindent = 0
-let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
-let g:autoformat_verbosemode=1
+"-----autoformat-----
+call autoformat#config('cpp', 
+	\ ['clang-format -style microsoft -']) 
+call autoformat#config('python', 
+	\ ['autopep8 -'])
+call autoformat#config('html', 
+    \ ['html-beautify -s 2'])
+autocmd! BufWritePre * :Autoformat
 nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
 inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
 func! AutoFormat()
+    :lua require("notify")("󰉡 success format")
     if &filetype == "markdown"
         :TableModeEnable
     else
@@ -330,16 +330,16 @@ nmap \c :Navbuddy<CR>
 
 "----competitest----
 lua require('competitest').setup()
-nmap rr :call Rrun()
+nmap rr :call Rrun()<CR>
 func! Rrun()
     :lua require("notify")(" code running")
-    :CompetiTestRun<CR>
+    :CompetiTestRun
 endfunction
 nmap ra :CompetiTestAdd<CR>
 nmap ri :CompetiTestReceive testcases<CR>
 nmap rd :call Delete()<CR>
 func! Delete()
-    :! rm -f ./%< ./%<_*
+    :! rm -f ./%< && rm -f ./%<_*
     :lua require("notify")("󰆴 text delete")
 endfunction
 
@@ -369,7 +369,7 @@ nnoremap <leader>fg :Telescope grep_string<CR>
 
 " ----tree----
 let g:neo_tree_remove_legacy_commands = 1
-nmap <F12> :Neotree<CR>
+nmap <F12> :Neotree source=filesystem reveal=true position=right<CR>
 
 "-----suda.vim-----
 cnoreabbrev sw w suda://%
