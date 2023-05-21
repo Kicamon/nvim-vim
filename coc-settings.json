@@ -32,14 +32,14 @@
 		"variable": " "
 	},
 	"diagnostic.signOffset": 1,
-	"diagnostic.errorSign": "󰩃 ",
-	"diagnostic.warningSign": "󰄛 ",
+	"diagnostic.errorSign": "🤣",
+	"diagnostic.warningSign": "🧐 ",
 	"diagnostic.infoSign": " ",
 	"diagnostic.hintSign": "󱅯 ",
 	"diagnostic.displayByAle": false,
 	"diagnostic.refreshOnInsertMode": false,
 	"diagnostic.checkCurrentLine": true,
-	"diagnostic.virtualTextPrefix": " ❯❯❯ ",
+	"diagnostic.virtualTextPrefix": " 󰶻 ",
 	"diagnostic.virtualText": false,
 	"inlayHint.enable": false,
 }

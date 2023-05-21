@@ -1,18 +1,10 @@
 # My neovim profile
 
 ## 使用之前
-如果是arch系linux用户的话，直接运行usr文件夹里的install.sh即可自动安装好所有要求的环境
-`source ~/.config/nvim/usr/install.sh`
-
-使用的插件管理器：[vim-plug](https://github.com/junegunn/vim-plug)
-如果是arch linux，运行命令`sudo pacman -S neovim-plug`
-
-python支持`pip install neovim`
-
-
 使用前先根据使用的操作系统进行安装
 
-插件环境要求（一定要先安装这些环境）： - nodejs >= 14.14.0
+插件环境要求（一定要先安装这些环境）：
+- nodejs >= 14.14.0
 - python >= 3.10.0
 - yarn
 - npm
@@ -20,6 +12,16 @@ python支持`pip install neovim`
 - jedi-language-server（python LSP）
 - autopep8（python格式化）
 - js-beautify(js，css，html格式化)
+
+如果是arch系linux用户的话，直接运行usr文件夹里的install.sh即可自动安装好所有要求的环境
+`source ~/.config/nvim/usr/install.sh`
+
+
+
+使用的插件管理器：[vim-plug](https://github.com/junegunn/vim-plug)
+如果是arch linux，运行命令`sudo pacman -S neovim-plug`
+
+python支持`pip install neovim`
 
 coc.nvim插件使用注意：
 进入`./plugged/coc.nvim`文件，运行命令`yarn install`
@@ -64,7 +66,7 @@ coc.nvim插件使用注意：
 非常容易理解，将数字键映射到了中间的一行，这样在上下进行多行移动的时候就不用伸出手指去够上边的数字键了。具体的配置在`num-key`文件夹中
 
 ## 编程
-> 我的配置只写了cpp，当然，大家可以自行围绕自己所使用的编程语言进行配置
+> 大家可以参考配置文件自行围绕自己所使用的编程语言进行配置
 
 #### 一键编译等
 |    操作    | 快捷键 |
@@ -84,7 +86,6 @@ autocmd! BufWritePre * :Autoformat
 nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
 inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
 func! AutoFormat()
-    :lua require("notify")("󰉡 success format")
     if &filetype == "markdown"
         :TableModeEnable
     else
@@ -92,6 +93,8 @@ func! AutoFormat()
     endif
 endfunction
 ```
+
+如果想要改变格式化的风格，只需要更改特定语言的中括号内的参数即可
 
 ##### c/cpp
 ```shell
@@ -103,6 +106,8 @@ sudo pacman -S clang
 pip3 install autopep8
 ```
 
+#### 查看全局变量、函数及类等
+快捷键`\c`
 
 #### 代码模板
 代码模板使用的是`coc-snippets` 这个插件，比如我想要存储一个cpp的基本模板，按照下面步骤操作：
@@ -156,6 +161,15 @@ endsnippet
 ```
 
 之后在写代码的过程中输入`acm` 就会出现基本模板的代码补全
+
+#### acm
+在打算法竞赛的时候，可以使用命令来配合浏览器插件`competitive companion`来进行操作
+
+| 快捷键   | 功能                                              |
+| :------: | :-----------------------------------------------: |
+| ri       | 获取测试样例<br>（配合competitive companion使用） |
+| ra       | 手动添加样例                                      |
+| rr       | 运行代码                                          |
 
 ## Markdown
 #### 指定浏览器
