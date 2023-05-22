@@ -51,6 +51,11 @@ set smartindent
 set ignorecase
 " 高亮本行
 set cursorline
+" 切换窗口
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
 "换行
 set nowrap
 map<M-w> :set wrap<CR>
