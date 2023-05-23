@@ -99,6 +99,8 @@ Plug 'numToStr/Comment.nvim'
 Plug 'SmiteshP/nvim-navbuddy'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
+" acm
+Plug 'xeluxee/competitest.nvim'
 " cpp高亮方案
 Plug 'octol/vim-cpp-enhanced-highlight'
 " 一键注释
@@ -299,7 +301,7 @@ let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
-map \p <leader>cc
+map \f <leader>cc
 map \a <leader>cu
 
 "-----autoformat-----
@@ -352,8 +354,7 @@ endfunction
 let g:mkdp_browser='chromium'
 "表格
 let g:table_mode_corner='|'
-command TMR TableModeRealign
-command TOC GenTocGitLab
+autocmd FileType markdown inoremap <buffer> [toc] <Esc>:GenTocGitLab<CR>
 "markdown文件中的conceal
 "基本
 let g:vim_markdown_conceal=0

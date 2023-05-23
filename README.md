@@ -182,7 +182,6 @@ let g:mkdp_browser='chromium'
 ```
 
 
-
 #### 输入法切换
 > 当前文件是.md时，进入插入模式时会自动将输入法切换成中文（使用fcitx5）,详细配置查看fctix.vim文件
 
@@ -191,7 +190,7 @@ let g:mkdp_browser='chromium'
 |:----------:|:------:|
 |    预览    |  \<F5> |
 | 表格格式化 |  Alt+e |
-|  插入目录  |  :TOC  |
+|  插入目录  |  [toc] |
 
 #### 语法快捷键
 具体内容查看本目录下`md-snippets`文件
