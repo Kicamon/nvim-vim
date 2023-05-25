@@ -14,7 +14,6 @@
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set t_CO=256
-silent! color deus
 hi NonText ctermfg=gray guifg=grey10
 hi NormalFloat guifg=LightGreen guibg=Green
 highlight NotifyBackground guibg=#000000
@@ -40,30 +39,36 @@ nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
 "换行
 set nowrap
-map<M-w> :set wrap<CR>
-map<M-S-w> :set nowrap<CR>
+nmap <leader>w :set wrap!<CR>
+noremap j gj
+noremap k gk
 " changebuffer
 nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
 "复制粘贴
-vnoremap <C-Insert> "+y
-nnoremap <S-Insert> "*p
+set clipboard=unnamedplus
 "离底行数
-set scrolloff=4
+set scrolloff=6
 "leader
 let mapleader = "\<space>"
 "渲染Tab和空格
 setlocal list
-set listchars=tab:▸\ ,trail:▫
+set listchars=tab:\|\ ,trail:▫
 "显示命令
 set wildmenu
 " insert模式下右移
 imap <A-l> <Right>
 " 警示线
-set colorcolumn=100
+set colorcolumn=80
+" 寻找下一个<++>
+nmap <leader><leader> /<++><CR>:noh<CR>c4l
 " undo
 set undofile
-set undodir=$HOME/.undo
+set undodir=~/.undo
+" 光标位置
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" 取消高亮
+nnoremap <leader>nh :noh<CR>
 
 "run code
 source ~/.config/nvim/run.vim
@@ -147,12 +152,12 @@ call plug#end()
 "=====butify=====
 "-----vim-startify-----
 let g:startify_custom_header = [
-            \ ' █████╗  ██████╗███╗   ███╗███████╗██████╗ ',
-            \ '██╔══██╗██╔════╝████╗ ████║██╔════╝██╔══██╗',
-            \ '███████║██║     ██╔████╔██║█████╗  ██████╔╝',
-            \ '██╔══██║██║     ██║╚██╔╝██║██╔══╝  ██╔══██╗',
-            \ '██║  ██║╚██████╗██║ ╚═╝ ██║███████╗██║  ██║',
-            \ '╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝',
+			\ '███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
+			\ '████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
+			\ '██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
+			\ '██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
+			\ '██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
+			\ '╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
             \]
 let g:startify_custom_footer = [
             \ '╭──────────────────────────────╮',
@@ -193,7 +198,6 @@ let g:xtabline_settings.tabline_modes = ['buffers']
 let g:xtabline_settings.enable_persistance = 0
 let g:xtabline_settings.last_open_first = 1
 let g:xtabline_settings.theme='slate'
-noremap to :XTabCycleMode<CR>
 
 "----theme----
 colorscheme gruvbox
@@ -302,7 +306,6 @@ autocmd! BufWritePre * :Autoformat
 nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
 inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
 func! AutoFormat()
-    :lua require("notify")("󰉡 success format")
     if &filetype == "markdown"
         :TableModeEnable
     else
@@ -324,16 +327,12 @@ nmap \n :Navbuddy<CR>
 
 "----competitest----
 lua require('competitest').setup()
-nmap rr :call Rrun()<CR>
-func! Rrun()
-    :lua require("notify")(" code running")
-    :CompetiTestRun
-endfunction
-nmap ra :CompetiTestAdd<CR>
-nmap ri :CompetiTestReceive testcases<CR>
-nmap rd :call Delete()<CR>
+autocmd FileType cpp,python nmap rr :CompetiTestRun<CR>
+autocmd FileType cpp,python nmap rr :CompetiTestAdd<CR>
+autocmd FileType cpp,python nmap rr :CompetiTestReceive testcases<CR>
+autocmd FileType cpp,python nmap rd :call Delete()<CR>
 func! Delete()
-    :! rm -f ./%< && rm -f ./%<_*
+    :! rm -f ./%< && rm -f ./%<_*.txt
     :lua require("notify")("󰆴 text delete")
 endfunction
 

@@ -1,7 +1,6 @@
 map  <F5>  :w<CR>:call Run()<CR>
 imap <F5>  <ESC>:w<CR>:call Run()<CR>
 func! Run()
-    :lua require("notify")(" code running")
     if &filetype == 'c'
         set splitbelow
         :sp
