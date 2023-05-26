@@ -7,6 +7,13 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
+" auto load when first use
+if empty(glob($HOME.'/.config/nvim/autoload/plug.vim'))
+	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
+				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 "====================================
 "===  Basic setting for vim use   ===
 "====================================
@@ -328,8 +335,8 @@ nmap \n :Navbuddy<CR>
 "----competitest----
 lua require('competitest').setup()
 autocmd FileType cpp,python nmap rr :CompetiTestRun<CR>
-autocmd FileType cpp,python nmap rr :CompetiTestAdd<CR>
-autocmd FileType cpp,python nmap rr :CompetiTestReceive testcases<CR>
+autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
+autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :call Delete()<CR>
 func! Delete()
     :! rm -f ./%< && rm -f ./%<_*.txt
