@@ -8,6 +8,8 @@
 "============================================
 
 if empty(glob($HOME.'/.undo'))
+	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
+			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	silent :! mkdir ~/.undo
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
@@ -42,6 +44,8 @@ nmap <C-h> <C-w>h
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
+"leader
+let mapleader = "\<space>"
 "换行
 set nowrap
 nmap <leader>w :set wrap!<CR>
@@ -54,8 +58,6 @@ nnoremap ]b :bn<CR>
 set clipboard=unnamedplus
 "离底行数
 set scrolloff=6
-"leader
-let mapleader = "\<space>"
 "渲染Tab和空格
 setlocal list
 set listchars=tab:\|\ ,trail:▫
@@ -297,8 +299,8 @@ let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
-map \c <leader>cc
-map \a <leader>cu
+"map \c <leader>cc
+map <leader>aa <leader>cu
 
 "-----autoformat-----
 call autoformat#config('cpp', 
@@ -334,6 +336,7 @@ nmap \n :Navbuddy<CR>
 lua require('competitest').setup()
 autocmd FileType cpp,python nmap rr :CompetiTestRun<CR>
 autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
+autocmd FileType cpp,python nmap re :CompetiTestEdit<CR>
 autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :call Delete()<CR>
 func! Delete()
@@ -345,7 +348,8 @@ endfunction
 let g:mkdp_browser='chromium'
 "表格
 let g:table_mode_corner='|'
-autocmd FileType markdown inoremap <buffer> [toc] <Esc>:GenTocGitLab<CR>
+let g:mkdp_theme = 'dark'
+autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
 "markdown文件中的conceal
 "基本
 let g:vim_markdown_conceal=0
