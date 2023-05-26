@@ -7,10 +7,8 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
-" auto load when first use
-if empty(glob($HOME.'/.config/nvim/autoload/plug.vim'))
-	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
-				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if empty(glob($HOME.'/.undo'))
+	silent :! mkdir ~/.undo
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
