@@ -21,9 +21,9 @@ endif
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set t_CO=256
-hi NonText ctermfg=gray guifg=grey10
-hi NormalFloat guifg=LightGreen guibg=Green
-highlight NotifyBackground guibg=#000000
+"hi NonText ctermfg=gray guifg=grey10
+"hi NormalFloat guifg=LightGreen guibg=Green
+"highlight NotifyBackground guibg=#000000
 " 基本高亮
 syntax on
 " 行号显示与相对行号
@@ -60,7 +60,7 @@ set clipboard=unnamedplus
 set scrolloff=6
 "渲染Tab和空格
 setlocal list
-set listchars=tab:\|\ ,trail:▫
+set listchars=tab:\┃\ ,trail:▫
 "显示命令
 set wildmenu
 " insert模式下右移
@@ -95,9 +95,10 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'SmiteshP/nvim-navic'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
-Plug 'SmiteshP/nvim-navbuddy'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
+" 快速预览跳转
+Plug 'SmiteshP/nvim-navbuddy'
 " acm
 Plug 'xeluxee/competitest.nvim'
 " cpp高亮方案
@@ -177,12 +178,30 @@ let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 " -----hlchunk----
 lua << EOF
 require('hlchunk').setup({
+	chunk = {
+		chars = {
+            horizontal_line = "─",
+            vertical_line = "│",
+            left_top = "╭",
+            left_bottom = "╰",
+            right_arrow = ">",
+        },
+        style = {
+            { fg = "#7FFFAA" },
+        },
+    },
     indent = {
-        chars = { "│", "¦", "┆", "┊", },
+        chars = { "│", "│", },
 
         style = {
-            "#8B00FF",
+            "#FF69B4",
+			"#00BFFF",
         },
+    },
+	line_num = {
+        enable = true,
+        use_treesitter = false,
+        style = "#FFFF00",
     },
     blank = {
         enable = false,
@@ -252,7 +271,7 @@ let g:coc_global_extensions = [
         \ 'coc-css',
         \ 'coc-json',
       \ ]
-set helpfile
+"set helpfile
 set nobackup
 set nowritebackup
 set pumheight=10
@@ -304,10 +323,10 @@ map <leader>aa <leader>cu
 
 "-----autoformat-----
 call autoformat#config('cpp', 
-	\ ['clang-format -style microsoft -']) 
-call autoformat#config('python', 
+	\ ['clang-format -style microsoft -'])
+call autoformat#config('python',
 	\ ['autopep8 -'])
-call autoformat#config('html', 
+call autoformat#config('html',
     \ ['html-beautify -s 2'])
 autocmd! BufWritePre * :Autoformat
 nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
@@ -338,10 +357,11 @@ autocmd FileType cpp,python nmap rr :CompetiTestRun<CR>
 autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
 autocmd FileType cpp,python nmap re :CompetiTestEdit<CR>
 autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
-autocmd FileType cpp,python nmap rd :call Delete()<CR>
+autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
+autocmd FileType cpp,python nmap rm :call Delete()<CR>
 func! Delete()
     :! rm -f ./%< && rm -f ./%<_*.txt
-    :lua require("notify")("󰆴 text delete")
+    :lua require("notify")("󰆴 test delete")
 endfunction
 
 "-----markdown-----
@@ -371,6 +391,11 @@ nnoremap <leader>fg :Telescope grep_string<CR>
 " ----tree----
 let g:neo_tree_remove_legacy_commands = 1
 nmap <F12> :Neotree source=filesystem reveal=true position=right<CR>
+lua << EOF
+require("neo-tree").setup({
+	close_if_last_window = true,
+})
+EOF
 
 "-----suda.vim-----
 cnoreabbrev sw w suda://%
