@@ -309,6 +309,10 @@ nmap <leader>rn <Plug>(coc-rename)
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
 
+if empty(glob($HOME.'/.config/coc/ultisnips/cpp.snippets'))
+	silent :! cp -rf ~/.config/nvim/usr/ultisnips ~/.config/coc
+endif
+
 "-----vim-cpp-enhanced-highlight-----
 let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
@@ -358,10 +362,15 @@ autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
 autocmd FileType cpp,python nmap re :CompetiTestEdit<CR>
 autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
-autocmd FileType cpp,python nmap rm :call Delete()<CR>
+nmap rm :call Delete()<CR>
 func! Delete()
-    :! rm -f ./%< && rm -f ./%<_*.txt
-    :lua require("notify")("󰆴 test delete")
+	if filereadable('Makefile')
+		:! make clean
+		:lua require("notify")("󰆴 Clearance complete")
+	else
+		:! rm -f ./%< && rm -f ./%<_*.txt
+		:lua require("notify")("󰆴 Test Samples Delete completed")
+	endif
 endfunction
 
 "-----markdown-----

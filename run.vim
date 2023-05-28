@@ -1,7 +1,11 @@
-map  <F5>  :w<CR>:call Run()<CR>
+nmap <F5>  :w<CR>:call Run()<CR>
 imap <F5>  <ESC>:w<CR>:call Run()<CR>
 func! Run()
-    if &filetype == 'c'
+	if filereadable('Makefile')
+        set splitbelow
+        :sp
+		term make && ./Main
+	elseif &filetype == 'c'
         set splitbelow
         :sp
         term gcc % -o %< && ./%< && rm -f ./%<
@@ -24,4 +28,11 @@ func! Run()
         term live-server --browser=chromium
         tabclose
     endif
+endfunction
+
+nmap <leader>mk :call GetMakefile()<CR>
+func! GetMakefile()
+	if &filetype == "cpp"
+		silent :! cp ~/.config/nvim/usr/Makefile_cpp ./Makefile
+	endif
 endfunction
