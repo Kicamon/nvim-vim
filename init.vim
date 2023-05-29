@@ -7,11 +7,16 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
+"auto load
 if empty(glob($HOME.'/.undo'))
 	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	silent :! mkdir ~/.undo
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+if empty(glob($HOME.'/.config/coc/ultisnips/cpp.snippets'))
+	silent :! cp -rf ~/.config/nvim/usr/ultisnips ~/.config/coc
 endif
 
 "====================================
@@ -63,8 +68,14 @@ setlocal list
 set listchars=tab:\┃\ ,trail:▫
 "显示命令
 set wildmenu
-" insert模式下右移
-imap <A-l> <Right>
+" move
+inoremap <A-l> <Right>
+nnoremap <A-j> <cmd>m .+1<cr>==
+nnoremap <A-k> <cmd>m .-2<cr>==
+inoremap <A-j> <esc><cmd>m .+1<cr>==gi
+inoremap <A-k> <esc><cmd>m .-2<cr>==gi
+vnoremap <A-j> :m '>+1<cr>gv=gv
+vnoremap <A-k> :m '<-2<cr>gv=gv
 " 警示线
 set colorcolumn=80
 " 寻找下一个<++>
@@ -75,12 +86,12 @@ set undodir=~/.undo
 " 光标位置
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " 取消高亮
-nnoremap <leader>nh :noh<CR>
+nnoremap <leader>n :noh<CR>
+" open init
+nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
 
-"run code
-source ~/.config/nvim/run.vim
-"fcitx5
-source ~/.config/nvim/fcitx.vim
+"my tools
+source ~/.config/nvim/tools.vim
 "md-snippets
 source ~/.config/nvim/md-snippets.vim
 "num-key
@@ -105,16 +116,16 @@ Plug 'xeluxee/competitest.nvim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " 一键注释
 Plug 'preservim/nerdcommenter'
-" 格式化
+" format
 Plug 'akarl/autoformat.nvim'
-" 前端
+" web
 Plug 'ap/vim-css-color'
 " markdown
 Plug 'preservim/vim-markdown'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'ferrine/md-img-paste.vim'
+Plug 'img-paste-devs/img-paste.vim'
 " 快捷选中文本
 Plug 'gcmt/wildfire.vim'
 " 快捷修改包裹符号
@@ -130,6 +141,8 @@ Plug 'lambdalisue/suda.vim'
 Plug 'lewis6991/gitsigns.nvim'
 " 多光标
 Plug 'mg979/vim-visual-multi'
+" open link
+Plug 'xiyaowong/link-visitor.nvim'
 
 " butify
 " 起始页面
@@ -143,6 +156,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mg979/vim-xtabline'
 Plug 'rebelot/heirline.nvim'
 " theme
+"Plug 'ellisonleao/gruvbox.nvim'
 Plug 'morhetz/gruvbox'
 " 小图标
 Plug 'ryanoasis/vim-devicons'
@@ -178,18 +192,6 @@ let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 " -----hlchunk----
 lua << EOF
 require('hlchunk').setup({
-	chunk = {
-		chars = {
-            horizontal_line = "─",
-            vertical_line = "│",
-            left_top = "╭",
-            left_bottom = "╰",
-            right_arrow = ">",
-        },
-        style = {
-            { fg = "#7FFFAA" },
-        },
-    },
     indent = {
         chars = { "│", "│", },
 
@@ -290,11 +292,11 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 inoremap <silent><expr> <c-o> coc#refresh()
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <silent> g- <Plug>(coc-diagnostic-prev)
+nmap <silent> g= <Plug>(coc-diagnostic-next)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
+map <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call ShowDocumentation()<CR>
 function! ShowDocumentation()
@@ -309,17 +311,13 @@ nmap <leader>rn <Plug>(coc-rename)
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
 
-if empty(glob($HOME.'/.config/coc/ultisnips/cpp.snippets'))
-	silent :! cp -rf ~/.config/nvim/usr/ultisnips ~/.config/coc
-endif
-
 "-----vim-cpp-enhanced-highlight-----
-let g:cpp_class_scope_highlight = 1
-let g:cpp_member_variable_highlight = 1
-let g:cpp_class_decl_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
-let g:cpp_experimental_template_highlight = 1
-let g:cpp_concepts_highlight = 1
+autocmd FileType cpp let g:cpp_class_scope_highlight = 1
+autocmd FileType cpp let g:cpp_member_variable_highlight = 1
+autocmd FileType cpp let g:cpp_class_decl_highlight = 1
+autocmd FileType cpp let g:cpp_experimental_simple_template_highlight = 1
+autocmd FileType cpp let g:cpp_experimental_template_highlight = 1
+autocmd FileType cpp let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
 "map \c <leader>cc
@@ -366,7 +364,7 @@ nmap rm :call Delete()<CR>
 func! Delete()
 	if filereadable('Makefile')
 		:! make clean
-		:lua require("notify")("󰆴 Clearance complete")
+		:lua require("notify")("󰆴 Clearance completed")
 	else
 		:! rm -f ./%< && rm -f ./%<_*.txt
 		:lua require("notify")("󰆴 Test Samples Delete completed")
@@ -374,23 +372,25 @@ func! Delete()
 endfunction
 
 "-----markdown-----
-let g:mkdp_browser='chromium'
+autocmd FileType markdown let g:mkdp_browser='chromium'
 "表格
-let g:table_mode_corner='|'
-let g:mkdp_theme = 'dark'
+autocmd FileType markdown let g:table_mode_corner='|'
+autocmd FileType markdown let g:mkdp_theme = 'dark'
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
 "markdown文件中的conceal
 "基本
-let g:vim_markdown_conceal=0
+autocmd FileType markdown let g:vim_markdown_conceal=0
 "代码块
-let g:vim_markdown_conceal_code_blocks = 0
+autocmd FileType markdown let g:vim_markdown_conceal_code_blocks = 0
 "latex数学公式
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
+autocmd FileType markdown let g:tex_conceal = ""
+autocmd FileType markdown let g:vim_markdown_math = 1
 "关闭折叠
 let g:vim_markdown_folding_disabled = 1
-"让其他类型文件遵循上列标准
-let g:vim_markdown_auto_extension_ext = 'txt'
+" img
+autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
+autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
+autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
 
 
 "-----telescope.nvim-----
@@ -427,3 +427,14 @@ nnoremap <LEADER>gr :Gitsigns reset_hunk<CR>
 nnoremap <LEADER>gb :Gitsigns blame_line<CR>
 nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>
 nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
+
+"-----link-visitor----
+lua << EOF
+require("link-visitor").setup({
+  open_cmd = nil,
+  silent = true, -- disable all prints, `false` by defaults skip_confirmation
+  skip_confirmation = false, -- Skip the confirmation step, default: false
+  border = "rounded" -- none, single, double, rounded, solid, shadow see `:h nvim_open_win()`
+})
+EOF
+nnoremap <leader>lg :VisitLinkUnderCursor<CR>

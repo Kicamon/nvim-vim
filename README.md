@@ -13,6 +13,7 @@
 - autopep8（python格式化）
 - js-beautify(js，css，html格式化)
 - lua(lua插件)
+- typescript
 
 如果是arch系linux用户的话，直接运行usr文件夹里的install.sh即可自动安装好所有要求的环境
 `source ~/.config/nvim/usr/install.sh`
