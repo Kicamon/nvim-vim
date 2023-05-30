@@ -1,4 +1,4 @@
-"----code run----
+"----codeing----
 nmap <F5>  :w<CR>:call Run()<CR>
 imap <F5>  <ESC>:w<CR>:call Run()<CR>
 func! Run()
@@ -29,6 +29,17 @@ func! Run()
         term live-server --browser=chromium
         tabclose
     endif
+endfunction
+
+nnoremap rm :call Delete()<CR>
+func! Delete()
+	if filereadable('Makefile')
+		:! make clean
+		:lua require("notify")("󰆴 Clearance completed")
+	else
+		:! rm -f ./%< && rm -f ./%<_*.txt
+		:lua require("notify")("󰆴 Test Samples Delete completed")
+	endif
 endfunction
 
 nmap <leader>mk :call GetMakefile()<CR>

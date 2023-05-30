@@ -22,52 +22,51 @@ endif
 "====================================
 "===  Basic setting for vim use   ===
 "====================================
-"配色
+" color
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set t_CO=256
 "hi NonText ctermfg=gray guifg=grey10
 "hi NormalFloat guifg=LightGreen guibg=Green
 "highlight NotifyBackground guibg=#000000
-" 基本高亮
+" highlight
 syntax on
-" 行号显示与相对行号
+set cursorline
+" line number
 set nu
 set relativenumber
-" tab缩进大小为4格
+" tab size
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set autoindent
 set smartindent
-" 忽略大小而写
+" ignore Uppercase and Lowercase
 set ignorecase
-" 高亮本行
-set cursorline
-" 切换窗口
+" change windows
 nmap <C-h> <C-w>h
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
-"leader
+" leader
 let mapleader = "\<space>"
-"换行
+" wrap
 set nowrap
 nmap <leader>w :set wrap!<CR>
 noremap j gj
 noremap k gk
-" changebuffer
+" change buffer
 nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
-"复制粘贴
+" copy and paste
 set clipboard=unnamedplus
-"离底行数
+" distance with top and bottom
 set scrolloff=6
-"渲染Tab和空格
+" show tab and space
 setlocal list
 set listchars=tab:\┃\ ,trail:▫
-"显示命令
-set wildmenu
+" spell check
+nnoremap <leader>sc :set spell!<CR>
 " move
 inoremap <A-l> <Right>
 nnoremap <A-j> <cmd>m .+1<cr>==
@@ -76,17 +75,17 @@ inoremap <A-j> <esc><cmd>m .+1<cr>==gi
 inoremap <A-k> <esc><cmd>m .-2<cr>==gi
 vnoremap <A-j> :m '>+1<cr>gv=gv
 vnoremap <A-k> :m '<-2<cr>gv=gv
-" 警示线
+" wrap line
 set colorcolumn=80
-" 寻找下一个<++>
-nmap <leader><leader> /<++><CR>:noh<CR>c4l
+" find next <++>
+nmap <leader><leader> /<++><CR>:noh<CR>_c4l
 " undo
 set undofile
 set undodir=~/.undo
-" 光标位置
+" cursor place last time
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-" 取消高亮
-nnoremap <leader>n :noh<CR>
+" cancel search highlight
+nnoremap <leader><CR> :noh<CR>
 " open init
 nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
 
@@ -108,13 +107,13 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
-" 快速预览跳转
+" preview code segment and jump
 Plug 'SmiteshP/nvim-navbuddy'
 " acm
 Plug 'xeluxee/competitest.nvim'
-" cpp高亮方案
+" cpp highlight
 Plug 'octol/vim-cpp-enhanced-highlight'
-" 一键注释
+" commenter
 Plug 'preservim/nerdcommenter'
 " format
 Plug 'akarl/autoformat.nvim'
@@ -126,11 +125,11 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'img-paste-devs/img-paste.vim'
-" 快捷选中文本
+" quick chose text
 Plug 'gcmt/wildfire.vim'
-" 快捷修改包裹符号
+" change the characters wrapping words
 Plug 'tpope/vim-surround'
-" 搜索文件
+" search files
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 " tree
@@ -139,15 +138,15 @@ Plug 'nvim-neo-tree/neo-tree.nvim'
 Plug 'lambdalisue/suda.vim'
 " git
 Plug 'lewis6991/gitsigns.nvim'
-" 多光标
+" more cursors
 Plug 'mg979/vim-visual-multi'
 " open link
 Plug 'xiyaowong/link-visitor.nvim'
 
-" butify
-" 起始页面
+" beautify
+" start page
 Plug 'mhinz/vim-startify'
-" 通知
+" notify
 Plug 'rcarriga/nvim-notify'
 " lines
 Plug 'shellRaining/hlchunk.nvim'
@@ -156,12 +155,11 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mg979/vim-xtabline'
 Plug 'rebelot/heirline.nvim'
 " theme
-"Plug 'ellisonleao/gruvbox.nvim'
 Plug 'morhetz/gruvbox'
-" 小图标
+" icons
 Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-web-devicons'
-" 彩虹括号
+" rainbow parentheses
 Plug 'luochen1990/rainbow'
 call plug#end()
 
@@ -171,7 +169,7 @@ call plug#end()
 "=== Plug config ====================
 "====================================
 
-"=====butify=====
+"=====beautify=====
 "-----vim-startify-----
 let g:startify_custom_header = [
 			\ '███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
@@ -214,7 +212,7 @@ EOF
 "-----airline----
 let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts = 1
-" 开启tabline
+" open tabline
 let g:airline#extensions#tabline#enabled = 1
 "let g:airline#extensions#tabline#left_sep = ' '
 "let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -321,7 +319,7 @@ autocmd FileType cpp let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
 "map \c <leader>cc
-map <leader>aa <leader>cu
+nnoremap <leader>aa <leader>cu
 
 "-----autoformat-----
 call autoformat#config('cpp', 
@@ -360,34 +358,24 @@ autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
 autocmd FileType cpp,python nmap re :CompetiTestEdit<CR>
 autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
-nmap rm :call Delete()<CR>
-func! Delete()
-	if filereadable('Makefile')
-		:! make clean
-		:lua require("notify")("󰆴 Clearance completed")
-	else
-		:! rm -f ./%< && rm -f ./%<_*.txt
-		:lua require("notify")("󰆴 Test Samples Delete completed")
-	endif
-endfunction
 
 "-----markdown-----
 autocmd FileType markdown let g:mkdp_browser='chromium'
-"表格
+"tabe
 autocmd FileType markdown let g:table_mode_corner='|'
 autocmd FileType markdown let g:mkdp_theme = 'dark'
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
-"markdown文件中的conceal
-"基本
+"the conceal in markdown
+"base
 autocmd FileType markdown let g:vim_markdown_conceal=0
-"代码块
+" code segment
 autocmd FileType markdown let g:vim_markdown_conceal_code_blocks = 0
-"latex数学公式
+"latex
 autocmd FileType markdown let g:tex_conceal = ""
 autocmd FileType markdown let g:vim_markdown_math = 1
-"关闭折叠
+"close fold
 let g:vim_markdown_folding_disabled = 1
-" img
+" images
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
 autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
@@ -437,4 +425,4 @@ require("link-visitor").setup({
   border = "rounded" -- none, single, double, rounded, solid, shadow see `:h nvim_open_win()`
 })
 EOF
-nnoremap <leader>lg :VisitLinkUnderCursor<CR>
+nnoremap gl :VisitLinkUnderCursor<CR>
