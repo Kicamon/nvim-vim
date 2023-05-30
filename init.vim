@@ -8,10 +8,10 @@
 "============================================
 
 "auto load
-if empty(glob($HOME.'/.undo'))
+if empty(glob($HOME.'/.temp'))
 	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	silent :! mkdir ~/.undo
+	silent :! mkdir ~/.temp && mkdir ~/.temp/undo && mkdir ~/.temp/latex
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -81,7 +81,7 @@ set colorcolumn=80
 nmap <leader><leader> /<++><CR>:noh<CR>_c4l
 " undo
 set undofile
-set undodir=~/.undo
+set undodir=~/.temp/undo
 " cursor place last time
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " cancel search highlight
@@ -270,6 +270,7 @@ let g:coc_global_extensions = [
         \ 'coc-highlight',
         \ 'coc-css',
         \ 'coc-json',
+        \ 'coc-texlab',
       \ ]
 "set helpfile
 set nobackup
@@ -294,7 +295,7 @@ nmap <silent> g- <Plug>(coc-diagnostic-prev)
 nmap <silent> g= <Plug>(coc-diagnostic-next)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
-map <silent> gi <Plug>(coc-implementation)
+nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call ShowDocumentation()<CR>
 function! ShowDocumentation()
@@ -319,7 +320,7 @@ autocmd FileType cpp let g:cpp_concepts_highlight = 1
 
 "-----nerdcommenter-----
 "map \c <leader>cc
-nnoremap <leader>aa <leader>cu
+map <leader>aa <leader>cu
 
 "-----autoformat-----
 call autoformat#config('cpp', 
@@ -379,6 +380,8 @@ let g:vim_markdown_folding_disabled = 1
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
 autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
+
+"-----latex-----
 
 
 "-----telescope.nvim-----

@@ -28,6 +28,8 @@ func! Run()
         tabe
         term live-server --browser=chromium
         tabclose
+    elseif &filetype == 'tex'
+		exec "CocCommand latex.ForwardSearch"
     endif
 endfunction
 
@@ -35,6 +37,9 @@ nnoremap rm :call Delete()<CR>
 func! Delete()
 	if filereadable('Makefile')
 		:! make clean
+		:lua require("notify")("󰆴 Clearance completed")
+	elseif &filetype == "tex"
+		:! rm -f ./%<.aux && rm -f ./%<.fdb_latexmk && rm -f ./%<.fls && rm -f ./%<.log && rm -f ./%<.synctex.gz
 		:lua require("notify")("󰆴 Clearance completed")
 	else
 		:! rm -f ./%< && rm -f ./%<_*.txt

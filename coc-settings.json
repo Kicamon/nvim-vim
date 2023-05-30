@@ -40,6 +40,12 @@
 	"diagnostic.refreshOnInsertMode": false,
 	"diagnostic.checkCurrentLine": true,
 	"diagnostic.virtualTextPrefix": " 󰶻 ",
-	"diagnostic.virtualText": false,
+	"diagnostic.virtualText": true,
 	"inlayHint.enable": false,
+	"texlab.forwardSearch.executable": "sioyek",
+	"texlab.forwardSearch.args": [
+		"%p",
+		"%l",
+	],
+	"texlab.build.onSave": true
 }
