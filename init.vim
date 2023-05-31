@@ -13,8 +13,6 @@ if empty(glob($HOME.'/.temp'))
 			    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     silent :! mkdir ~/.temp && mkdir ~/.temp/undo
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    :vsp
-    term bash ~/.config/nvim/usr/install.sh
 endif
 
 if empty(glob($HOME.'/.config/coc/ultisnips/cpp.snippets'))
