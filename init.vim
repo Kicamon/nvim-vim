@@ -9,9 +9,10 @@
 
 "auto load
 if empty(glob($HOME.'/.temp'))
+	:! bash ~/.config/nvim/usr/install.sh
 	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	silent :! mkdir ~/.temp && mkdir ~/.temp/undo && mkdir ~/.temp/latex
+	silent :! mkdir ~/.temp && mkdir ~/.temp/undo
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -133,7 +134,8 @@ Plug 'tpope/vim-surround'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 " tree
-Plug 'nvim-neo-tree/neo-tree.nvim'
+Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 " sudo
 Plug 'lambdalisue/suda.vim'
 " git
@@ -142,6 +144,8 @@ Plug 'lewis6991/gitsigns.nvim'
 Plug 'mg979/vim-visual-multi'
 " open link
 Plug 'xiyaowong/link-visitor.nvim'
+" undo tree
+Plug 'mbbill/undotree'
 
 " beautify
 " start page
@@ -191,11 +195,12 @@ let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 lua << EOF
 require('hlchunk').setup({
     indent = {
-        chars = { "│", "│", },
+        chars = { "┃", "┃", "┃", },
 
         style = {
-            "#FF69B4",
 			"#00BFFF",
+            "#FF69B4",
+			"#FFFFFF",
         },
     },
 	line_num = {
@@ -325,6 +330,8 @@ map <leader>aa <leader>cu
 "-----autoformat-----
 call autoformat#config('cpp', 
 	\ ['clang-format -style microsoft -'])
+call autoformat#config('c', 
+	\ ['clang-format -style microsoft -'])
 call autoformat#config('python',
 	\ ['autopep8 -'])
 call autoformat#config('html',
@@ -334,7 +341,7 @@ nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
 inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
 func! AutoFormat()
     if &filetype == "markdown"
-        :TableModeEnable
+        :TableModeToggle
     else
         :Autoformat
     endif
@@ -381,21 +388,28 @@ autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownCli
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
 autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
 
-"-----latex-----
-
-
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>fg :Telescope grep_string<CR>
 
 " ----tree----
-let g:neo_tree_remove_legacy_commands = 1
-nmap <F12> :Neotree source=filesystem reveal=true position=right<CR>
-lua << EOF
-require("neo-tree").setup({
-	close_if_last_window = true,
-})
-EOF
+let g:NERDTreeWinPos = "right"
+noremap tt :NERDTreeMirror<CR>
+noremap tt :NERDTreeToggle<CR>
+
+let g:NERDTreeGitStatusUseNerdFonts = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
 
 "-----suda.vim-----
 cnoreabbrev sw w suda://%
@@ -429,3 +443,6 @@ require("link-visitor").setup({
 })
 EOF
 nnoremap gl :VisitLinkUnderCursor<CR>
+
+"----undotree---
+nnoremap L :UndotreeToggle<CR>

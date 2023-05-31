@@ -30,6 +30,10 @@ func! Run()
         tabclose
     elseif &filetype == 'tex'
 		exec "CocCommand latex.ForwardSearch"
+    elseif &filetype == 'sh'
+		set splitbelow
+		:sp
+		term bash %
     endif
 endfunction
 
