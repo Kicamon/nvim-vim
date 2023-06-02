@@ -75,10 +75,15 @@ inoremap <A-j> <esc><cmd>m .+1<cr>==gi
 inoremap <A-k> <esc><cmd>m .-2<cr>==gi
 vnoremap <A-j> :m '>+1<cr>gv=gv
 vnoremap <A-k> :m '<-2<cr>gv=gv
+" change window size
+noremap <up> :res +5<CR>
+noremap <down> :res -5<CR>
+noremap <left> :vertical resize-5<CR>
+noremap <right> :vertical resize+5<CR>
 " wrap line
 set colorcolumn=80
 " find next <++>
-nmap <leader><leader> /<++><CR>:noh<CR>_c4l
+nmap <leader><leader> /<++><CR>:noh<CR>"_c4l
 " undo
 set undofile
 set undodir=~/.temp/undo
@@ -94,11 +99,11 @@ source ~/.config/nvim/tools.vim
 "md-snippets
 source ~/.config/nvim/md-snippets.vim
 "num-key
-source ~/.config/nvim/num-key.vim
+source ~/.config/nvim/cursor.vim
 
 "====plugin management====
 call plug#begin('~/.config/nvim/plugged')
-" code
+"-----code-----
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'honza/vim-snippets'
 Plug 'neovim/nvim-lspconfig'
@@ -106,10 +111,6 @@ Plug 'SmiteshP/nvim-navic'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
-Plug 'xeluxee/competitest.nvim'
-" preview code segment and jump
-Plug 'SmiteshP/nvim-navbuddy'
-" acm
 Plug 'xeluxee/competitest.nvim'
 " cpp highlight
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -119,12 +120,17 @@ Plug 'preservim/nerdcommenter'
 Plug 'akarl/autoformat.nvim'
 " web
 Plug 'ap/vim-css-color'
-" markdown
+" preview code segment and jump
+Plug 'SmiteshP/nvim-navbuddy'
+" acm
+Plug 'xeluxee/competitest.nvim'
+"-----markdown-----
 Plug 'preservim/vim-markdown'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'img-paste-devs/img-paste.vim'
+"-------edit------
 " quick chose text
 Plug 'gcmt/wildfire.vim'
 " change the characters wrapping words
@@ -145,8 +151,7 @@ Plug 'mg979/vim-visual-multi'
 Plug 'xiyaowong/link-visitor.nvim'
 " undo tree
 Plug 'mbbill/undotree'
-
-" beautify
+"------beautify-------
 " start page
 Plug 'mhinz/vim-startify'
 " notify
@@ -187,7 +192,7 @@ let g:startify_custom_footer = [
             \ '│        Just for Fun!         │',
             \ '╰──────────────────────────────╯',
             \]
-let g:startify_files_number = 5
+let g:startify_files_number = 10
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
 " -----hlchunk----
@@ -295,8 +300,8 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 inoremap <silent><expr> <c-o> coc#refresh()
-nmap <silent> g- <Plug>(coc-diagnostic-prev)
-nmap <silent> g= <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>- <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>= <Plug>(coc-diagnostic-next)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
@@ -367,6 +372,8 @@ autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
 
 "-----markdown-----
+" disable default key mappings
+let g:vim_markdown_no_default_key_mappings = 1
 autocmd FileType markdown let g:mkdp_browser='chromium'
 "tabe
 autocmd FileType markdown let g:table_mode_corner='|'
@@ -382,6 +389,21 @@ autocmd FileType markdown let g:tex_conceal = ""
 autocmd FileType markdown let g:vim_markdown_math = 1
 "close fold
 let g:vim_markdown_folding_disabled = 1
+"navigable table
+autocmd FileType markdown nnoremap <buffer> T :call Toc_tree()<CR>
+let g:toc_tree_close=1
+func! Toc_tree()
+	if g:toc_tree_close == 1
+		let g:toc_tree_close = 0
+		:Toc
+		:vertical resize-30
+		:set wrap
+	else
+		let g:toc_tree_close = 1
+		:Toc
+		q
+	endif
+endfunction
 " images
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
@@ -393,8 +415,7 @@ nnoremap <leader>fg :Telescope grep_string<CR>
 
 " ----tree----
 let g:NERDTreeWinPos = "right"
-noremap tt :NERDTreeMirror<CR>
-noremap tt :NERDTreeToggle<CR>
+noremap <F12> :NERDTreeToggle<CR>
 
 let g:NERDTreeGitStatusUseNerdFonts = 1
 let g:NERDTreeGitStatusIndicatorMapCustom = {
@@ -426,7 +447,6 @@ require('gitsigns').setup({
   },
 })
 EOF
-nnoremap H :Gitsigns preview_hunk_inline<CR>
 nnoremap <LEADER>gr :Gitsigns reset_hunk<CR>
 nnoremap <LEADER>gb :Gitsigns blame_line<CR>
 nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>

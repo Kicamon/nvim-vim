@@ -1,8 +1,6 @@
 CXX = g++
 TARGET = Main
-# 所有当前目录的.cpp文件都放在SRC里面
 SRC = $(wildcard *.cpp)
-# 把SRC里面的.cpp文件替换为.o文件
 OBJ = $(patsubst %.cpp, %.o,$(SRC))
  
 CXXLAGS = -c -Wall

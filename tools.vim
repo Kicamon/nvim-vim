@@ -54,7 +54,7 @@ endfunction
 nmap <leader>mk :call GetMakefile()<CR>
 func! GetMakefile()
 	if &filetype == "cpp"
-		silent :! cp ~/.config/nvim/usr/Makefile_cpp ./Makefile
+		silent :! cp ~/.config/nvim/usr/Makefile/Makefile_cpp ./Makefile
 	endif
 endfunction
 

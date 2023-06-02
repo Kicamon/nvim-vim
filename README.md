@@ -13,7 +13,6 @@
 - autopep8（python格式化）
 - js-beautify(js，css，html格式化)
 - lua(lua插件)
-- typescript
 
 如果是arch系linux用户的话，直接运行usr文件夹里的install.sh即可自动安装好所有要求的环境
 `source ~/.config/nvim/usr/install.sh`
@@ -21,7 +20,6 @@
 
 
 使用的插件管理器：[vim-plug](https://github.com/junegunn/vim-plug)
-如果是arch linux，运行命令`sudo pacman -S neovim-plug`
 
 python支持`pip install neovim`
 
@@ -44,10 +42,10 @@ coc.nvim插件使用注意：
 #### 打开和关闭文件树
 | 操作 | 快捷键 |
 |:----:|:------:|
-| 打开 |   tt   |
-| 关闭 |   tt   |
+| 打开 | \<F12> |
+| 关闭 | \<F12> |
 
-#### num-key
+#### cursor
 > 这个功能是方便进行上下移动的，可以不用伸手去摸数字键就能实现多行上下移动的操作。这里我只配置了400行以内的上下移动，又需要的朋友可以参照写法自行拓展
 
 这里简单的给几个例子就能理解
@@ -59,7 +57,7 @@ coc.nvim插件使用注意：
 |  45j | 'f;\<leader> |
 |  50k | [g;\<leader> |
 
-非常容易理解，将数字键映射到了中间的一行，这样在上下进行多行移动的时候就不用伸出手指去够上边的数字键了。具体的配置在`num-key`文件中
+非常容易理解，将数字键映射到了中间的一行，这样在上下进行多行移动的时候就不用伸出手指去够上边的数字键了。具体的配置在`cursor.vim`文件中
 
 ## 编程
 > 大家可以参考配置文件自行围绕自己所使用的编程语言进行配置
@@ -78,8 +76,10 @@ coc.nvim插件使用注意：
 | 解注释 | \<space>aa |
 
 ##### 自动格式化
-```Vim Script
+```Vim
 call autoformat#config('cpp', 
+	\ ['clang-format -style microsoft -']) 
+call autoformat#config('c', 
 	\ ['clang-format -style microsoft -']) 
 call autoformat#config('python', 
 	\ ['autopep8 -'])
@@ -171,7 +171,7 @@ endsnippet
 #### acm
 在打算法竞赛的时候，可以使用命令来配合浏览器插件`competitive companion`来进行操作
 
-| 快捷键   | 功能                                              |
+| shortcut | action                                            |
 | :------: | :-----------------------------------------------: |
 | ri       | 获取测试样例<br>（配合competitive companion使用） |
 | ra       | 手动添加样例                                      |
@@ -186,10 +186,15 @@ endsnippet
 
 我这里使用的是chromium浏览器
 
-```Vim Script
+```Vim
 let g:mkdp_browser='chromium'
 ```
 
+
+#### 导航栏
+| shortcut | action     |
+|----------|------------|
+| T        | 打开导航栏 |
 
 #### 输入法切换
 > 当前文件是.md或者.txt时，进入插入模式时会自动将输入法切换成中文（使用fcitx5）,详细配置查看fctix.vim文件

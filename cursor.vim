@@ -1,4 +1,4 @@
-"将数字键移动到中间
+" move cursor with the middle of the keyboard
 noremap 'a<leader> 1j
 noremap 's<leader> 2j
 noremap 'd<leader> 3j
