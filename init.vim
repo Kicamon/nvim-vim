@@ -52,7 +52,7 @@ nmap <C-l> <C-w>l
 let mapleader = "\<space>"
 " wrap
 set nowrap
-nmap <leader>w :set wrap!<CR>
+nmap <leader>W :set wrap!<CR>
 noremap j gj
 noremap k gk
 " change buffer
@@ -93,6 +93,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 nnoremap <leader><CR> :noh<CR>
 " open init
 nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
+" close the conceal
+set conceallevel=0
 
 "my tools
 source ~/.config/nvim/tools.vim
@@ -100,6 +102,8 @@ source ~/.config/nvim/tools.vim
 source ~/.config/nvim/md-snippets.vim
 "num-key
 source ~/.config/nvim/cursor.vim
+"study
+source ~/.config/nvim/usr/study/study.vim
 
 "====plugin management====
 call plug#begin('~/.config/nvim/plugged')
@@ -112,8 +116,6 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
-" cpp highlight
-Plug 'octol/vim-cpp-enhanced-highlight'
 " commenter
 Plug 'preservim/nerdcommenter'
 " format
@@ -124,12 +126,13 @@ Plug 'ap/vim-css-color'
 Plug 'SmiteshP/nvim-navbuddy'
 " acm
 Plug 'xeluxee/competitest.nvim'
-"-----markdown-----
+"-----markdown&note-----
 Plug 'preservim/vim-markdown'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'img-paste-devs/img-paste.vim'
+Plug 'vimwiki/vimwiki'
 "-------edit------
 " quick chose text
 Plug 'gcmt/wildfire.vim'
@@ -141,8 +144,6 @@ Plug 'nvim-telescope/telescope.nvim'
 " tree
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-" sudo
-Plug 'lambdalisue/suda.vim'
 " git
 Plug 'lewis6991/gitsigns.nvim'
 " more cursors
@@ -151,6 +152,10 @@ Plug 'mg979/vim-visual-multi'
 Plug 'xiyaowong/link-visitor.nvim'
 " undo tree
 Plug 'mbbill/undotree'
+" float ranger
+Plug 'kevinhwang91/rnvimr'
+" auto alignment
+Plug 'junegunn/vim-easy-align'
 "------beautify-------
 " start page
 Plug 'mhinz/vim-startify'
@@ -169,6 +174,11 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-web-devicons'
 " rainbow parentheses
 Plug 'luochen1990/rainbow'
+"-----other------
+" goyo
+Plug 'junegunn/goyo.vim'
+" sudo
+Plug 'lambdalisue/suda.vim'
 call plug#end()
 
 
@@ -192,7 +202,7 @@ let g:startify_custom_footer = [
             \ '│        Just for Fun!         │',
             \ '╰──────────────────────────────╯',
             \]
-let g:startify_files_number = 10
+let g:startify_files_number = 5
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
 " -----hlchunk----
@@ -203,8 +213,8 @@ require('hlchunk').setup({
 
         style = {
 			"#00BFFF",
-            "#FF69B4",
-			"#FFFFFF",
+            "#B0E0E6",
+			"#FF69B4",
         },
     },
 	line_num = {
@@ -319,14 +329,6 @@ nmap <leader>rn <Plug>(coc-rename)
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
 
-"-----vim-cpp-enhanced-highlight-----
-autocmd FileType cpp let g:cpp_class_scope_highlight = 1
-autocmd FileType cpp let g:cpp_member_variable_highlight = 1
-autocmd FileType cpp let g:cpp_class_decl_highlight = 1
-autocmd FileType cpp let g:cpp_experimental_simple_template_highlight = 1
-autocmd FileType cpp let g:cpp_experimental_template_highlight = 1
-autocmd FileType cpp let g:cpp_concepts_highlight = 1
-
 "-----nerdcommenter-----
 "map \c <leader>cc
 map <leader>aa <leader>cu
@@ -344,7 +346,7 @@ autocmd! BufWritePre * :Autoformat
 nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
 inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
 func! AutoFormat()
-    if &filetype == "markdown"
+    if &filetype == "markdown" || &filetype == "vimwiki"
         :TableModeToggle
     else
         :Autoformat
@@ -372,6 +374,7 @@ autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
 autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
 
 "-----markdown-----
+autocmd FileType markdown set wrap
 " disable default key mappings
 let g:vim_markdown_no_default_key_mappings = 1
 autocmd FileType markdown let g:mkdp_browser='chromium'
@@ -379,14 +382,6 @@ autocmd FileType markdown let g:mkdp_browser='chromium'
 autocmd FileType markdown let g:table_mode_corner='|'
 autocmd FileType markdown let g:mkdp_theme = 'dark'
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
-"the conceal in markdown
-"base
-autocmd FileType markdown let g:vim_markdown_conceal=0
-" code segment
-autocmd FileType markdown let g:vim_markdown_conceal_code_blocks = 0
-"latex
-autocmd FileType markdown let g:tex_conceal = ""
-autocmd FileType markdown let g:vim_markdown_math = 1
 "close fold
 let g:vim_markdown_folding_disabled = 1
 "navigable table
@@ -409,6 +404,12 @@ autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownCli
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
 autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
 
+"----vinwiki----
+let g:vimwiki_list = [{'path': '~/Documents/study/Note/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_global_ext = 0
+autocmd FileType vimwiki set wrap
+
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>fg :Telescope grep_string<CR>
@@ -430,9 +431,6 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
                 \ 'Clean'     :'✔︎',
                 \ 'Unknown'   :'?',
                 \ }
-
-"-----suda.vim-----
-cnoreabbrev sw w suda://%
 
 "-----gitsigns.nvim-----
 lua <<EOF
@@ -465,3 +463,16 @@ nnoremap gl :VisitLinkUnderCursor<CR>
 
 "----undotree---
 nnoremap L :UndotreeToggle<CR>
+
+"----rnvimr----
+nnoremap <leader>R :RnvimrToggle<CR>
+
+"-----vim-easy-align---
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+"-----suda-----
+cnoreabbrev sw w suda://%
+
+"-----goyo--------
+nnoremap gy :Goyo<CR>
