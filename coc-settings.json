@@ -43,9 +43,15 @@
 	"diagnostic.virtualText": false,
 	"inlayHint.enable": false,
 	"texlab.forwardSearch.executable": "sioyek",
+	"coc.preferences.formatOnSaveFiletypes": [
+		"json",
+	],
 	"texlab.forwardSearch.args": [
 		"%p",
 		"%l",
 	],
-	"texlab.build.onSave": true
+	"texlab.build.onSave": true,
+    "snippets.ultisnips.directories": [
+		"$HOME/.config/nvim/Ultisnips/",
+	]
 }

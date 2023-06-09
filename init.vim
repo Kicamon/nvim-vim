@@ -8,15 +8,11 @@
 "============================================
 
 "auto load
-if empty(glob($HOME.'/.temp'))
+if empty(glob($HOME.'/.config/nvim/tmp'))
     silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 			    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    silent :! mkdir ~/.temp && mkdir ~/.temp/undo
+    silent :! mkdir -p ~/.config/nvim/tmp/undo
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-if empty(glob($HOME.'/.config/coc/ultisnips/cpp.snippets'))
-	silent :! cp -rf ~/.config/nvim/usr/ultisnips ~/.config/coc
 endif
 
 "====================================
@@ -43,11 +39,18 @@ set autoindent
 set smartindent
 " ignore Uppercase and Lowercase
 set ignorecase
-" change windows
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
+" disable the default s key
+noremap s <nop>
+nnoremap C cl
+" windows operation
+noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
+noremap sj :set splitbelow<CR>:split<CR>
+noremap sk :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
+noremap sl :set splitright<CR>:vsplit<CR>
+nmap <leader>h <C-w>h
+nmap <leader>j <C-w>j
+nmap <leader>k <C-w>k
+nmap <leader>l <C-w>l
 " leader
 let mapleader = "\<space>"
 " wrap
@@ -59,7 +62,8 @@ noremap k gk
 nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
 " copy and paste
-set clipboard=unnamedplus
+"set clipboard=unnamedplus
+vnoremap Y "+y
 " distance with top and bottom
 set scrolloff=6
 " show tab and space
@@ -86,7 +90,7 @@ set colorcolumn=80
 nmap <leader><leader> /<++><CR>:noh<CR>"_c4l
 " undo
 set undofile
-set undodir=~/.temp/undo
+set undodir=~/.config/nvim/tmp/undo
 " cursor place last time
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " cancel search highlight
@@ -95,6 +99,8 @@ nnoremap <leader><CR> :noh<CR>
 nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
 " close the conceal
 set conceallevel=0
+" show tabline
+set showtabline=2
 
 "my tools
 source ~/.config/nvim/tools.vim
@@ -232,7 +238,7 @@ EOF
 let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts = 1
 " open tabline
-let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#enabled = 1
 "let g:airline#extensions#tabline#left_sep = ' '
 "let g:airline#extensions#tabline#left_alt_sep = '|'
 
@@ -241,7 +247,7 @@ let g:xtabline_settings = {}
 let g:xtabline_settings.enable_mappings = 0
 let g:xtabline_settings.tabline_modes = ['buffers']
 let g:xtabline_settings.enable_persistance = 0
-let g:xtabline_settings.last_open_first = 1
+let g:xtabline_settings.last_open_first = 0
 let g:xtabline_settings.theme='slate'
 
 "----theme----
@@ -326,8 +332,9 @@ function! ShowDocumentation()
 endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
-" coc-translator
 nmap ts <Plug>(coc-translator-p)
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
 
 "-----nerdcommenter-----
 "map \c <leader>cc
@@ -381,6 +388,7 @@ autocmd FileType markdown let g:mkdp_browser='chromium'
 "tabe
 autocmd FileType markdown let g:table_mode_corner='|'
 autocmd FileType markdown let g:mkdp_theme = 'dark'
+"toc
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
 "close fold
 let g:vim_markdown_folding_disabled = 1
@@ -440,7 +448,7 @@ require('gitsigns').setup({
     change       = { hl = 'GitSignsChange', text = '░', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
     delete       = { hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
     topdelete    = { hl = 'GitSignsDelete', text = '▔', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
-    changedelete = { hl = 'GitSignsChange', text = '▒', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
+    changedelete = { hl = 'GitSignsChange', text = '█', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
     untracked    = { hl = 'GitSignsAdd'   , text = '┆', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'    },
   },
 })
