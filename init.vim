@@ -42,6 +42,9 @@ set ignorecase
 " disable the default s key
 noremap s <nop>
 nnoremap C cl
+" timeout
+set ttimeoutlen=0
+set notimeout
 " windows operation
 noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 noremap sj :set splitbelow<CR>:split<CR>
@@ -122,6 +125,7 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " commenter
 Plug 'preservim/nerdcommenter'
 " format
@@ -172,7 +176,6 @@ Plug 'shellRaining/hlchunk.nvim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mg979/vim-xtabline'
-Plug 'rebelot/heirline.nvim'
 " theme
 Plug 'morhetz/gruvbox'
 " icons
@@ -196,17 +199,17 @@ call plug#end()
 "=====beautify=====
 "-----vim-startify-----
 let g:startify_custom_header = [
-			\ '███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
-			\ '████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
-			\ '██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
-			\ '██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
-			\ '██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
-			\ '╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
+			\ '   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
+			\ '   ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
+			\ '   ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
+			\ '   ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
+			\ '   ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
+			\ '   ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
             \]
 let g:startify_custom_footer = [
-            \ '╭──────────────────────────────╮',
-            \ '│        Just for Fun!         │',
-            \ '╰──────────────────────────────╯',
+            \ '   ╭──────────────────────────────╮',
+            \ '   │        Just for Fun!         │',
+            \ '   ╰──────────────────────────────╯',
             \]
 let g:startify_files_number = 5
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
@@ -214,23 +217,23 @@ let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 " -----hlchunk----
 lua << EOF
 require('hlchunk').setup({
-    indent = {
-        chars = { "┃", "┃", "┃", },
+	indent = {
+		chars = { "┃", "┃", "┃", },
 
-        style = {
+		style = {
 			"#00BFFF",
-            "#B0E0E6",
+			"#B0E0E6",
 			"#FF69B4",
-        },
-    },
+		},
+	},
 	line_num = {
-        enable = true,
-        use_treesitter = false,
-        style = "#FFFF00",
-    },
-    blank = {
-        enable = false,
-    }
+		enable = true,
+		use_treesitter = false,
+		style = "#FFFF00",
+	},
+	blank = {
+		enable = false,
+	}
 })
 EOF
 

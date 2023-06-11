@@ -44,14 +44,14 @@
 	"inlayHint.enable": false,
 	"texlab.forwardSearch.executable": "sioyek",
 	"coc.preferences.formatOnSaveFiletypes": [
-		"json",
+		"json"
 	],
 	"texlab.forwardSearch.args": [
 		"%p",
-		"%l",
+		"%l"
 	],
 	"texlab.build.onSave": true,
-    "snippets.ultisnips.directories": [
-		"$HOME/.config/nvim/Ultisnips/",
+	"snippets.ultisnips.directories": [
+		"$HOME/.config/nvim/usr/Ultisnips/"
 	]
 }

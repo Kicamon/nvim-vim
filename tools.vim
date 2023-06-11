@@ -1,7 +1,7 @@
 "----codeing----
-nmap <F5>  :w<CR>:call Run()<CR>
-imap <F5>  <ESC>:w<CR>:call Run()<CR>
+nmap <F5> :call Run()<CR>
 func! Run()
+	exec "w"
 	if &filetype == 'c'
 		if filereadable('Makefile')
 			set splitbelow
