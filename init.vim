@@ -125,7 +125,6 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " commenter
 Plug 'preservim/nerdcommenter'
 " format
