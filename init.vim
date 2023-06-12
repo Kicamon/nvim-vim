@@ -18,6 +18,8 @@ endif
 "====================================
 "===  Basic setting for vim use   ===
 "====================================
+" leader
+let mapleader = "\<space>"
 " color
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -56,8 +58,6 @@ nmap <leader>h <C-w>h
 nmap <leader>j <C-w>j
 nmap <leader>k <C-w>k
 nmap <leader>l <C-w>l
-" leader
-let mapleader = "\<space>"
 " wrap
 set nowrap
 nmap <leader>W :set wrap!<CR>
