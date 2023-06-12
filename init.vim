@@ -46,6 +46,7 @@ noremap s <nop>
 nnoremap C cl
 nnoremap Q :q<cr>
 nnoremap W :w<cr>
+nnoremap <C-c> zz<cr>
 " timeout
 set ttimeoutlen=0
 set notimeout
@@ -454,9 +455,6 @@ require("link-visitor").setup({
 })
 EOF
 nnoremap gl :VisitLinkUnderCursor<CR>
-
-"----undotree---
-nnoremap L :UndotreeToggle<CR>
 
 "----rnvimr----
 nnoremap <leader>R :RnvimrToggle<CR>
