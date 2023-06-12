@@ -39,9 +39,11 @@ set autoindent
 set smartindent
 " ignore Uppercase and Lowercase
 set ignorecase
-" disable the default s key
+" change defualt key
 noremap s <nop>
 nnoremap C cl
+nnoremap Q :q<cr>
+nnoremap W :w<cr>
 " timeout
 set ttimeoutlen=0
 set notimeout
@@ -136,7 +138,6 @@ Plug 'SmiteshP/nvim-navbuddy'
 " acm
 Plug 'xeluxee/competitest.nvim'
 "-----markdown&note-----
-Plug 'preservim/vim-markdown'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
@@ -386,29 +387,12 @@ autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
 autocmd FileType markdown set wrap
 " disable default key mappings
 let g:vim_markdown_no_default_key_mappings = 1
-autocmd FileType markdown let g:mkdp_browser='chromium'
+let g:mkdp_browser='chromium'
 "tabe
 autocmd FileType markdown let g:table_mode_corner='|'
 autocmd FileType markdown let g:mkdp_theme = 'dark'
 "toc
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
-"close fold
-let g:vim_markdown_folding_disabled = 1
-"navigable table
-autocmd FileType markdown nnoremap <buffer> T :call Toc_tree()<CR>
-let g:toc_tree_close=1
-func! Toc_tree()
-	if g:toc_tree_close == 1
-		let g:toc_tree_close = 0
-		:Toc
-		:vertical resize-30
-		:set wrap
-	else
-		let g:toc_tree_close = 1
-		:Toc
-		q
-	endif
-endfunction
 " images
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
