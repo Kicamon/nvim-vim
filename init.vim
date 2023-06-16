@@ -30,6 +30,8 @@ set t_CO=256
 " highlight
 syntax on
 set cursorline
+" wrap
+set nowrap
 " line number
 set nu
 set relativenumber
@@ -41,15 +43,33 @@ set autoindent
 set smartindent
 " ignore Uppercase and Lowercase
 set ignorecase
+set smartcase
+" timeout
+set ttimeoutlen=0
+set notimeout
+set virtualedit=block
+" close the conceal
+set conceallevel=0
+" show tabline
+set showtabline=2
+" show tab and space
+set list
+set listchars=tab:\┃\ ,trail:▫
+" distance with top and bottom
+set scrolloff=6
+" wrap line
+set colorcolumn=80
+" undo
+set undofile
+set undodir=~/.config/nvim/tmp/undo
+" cursor place last time
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " change defualt key
 noremap s <nop>
 nnoremap C cl
 nnoremap Q :q<cr>
 nnoremap W :w<cr>
-nnoremap <C-c> zz<cr>
-" timeout
-set ttimeoutlen=0
-set notimeout
+nnoremap B :bd<cr>
 " windows operation
 noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 noremap sj :set splitbelow<CR>:split<CR>
@@ -60,8 +80,7 @@ nmap <leader>j <C-w>j
 nmap <leader>k <C-w>k
 nmap <leader>l <C-w>l
 " wrap
-set nowrap
-nmap <leader>W :set wrap!<CR>
+nmap <leader>sw :set wrap!<CR>
 noremap j gj
 noremap k gk
 " change buffer
@@ -70,19 +89,15 @@ nnoremap ]b :bn<CR>
 " copy and paste
 "set clipboard=unnamedplus
 vnoremap Y "+y
-" distance with top and bottom
-set scrolloff=6
-" show tab and space
-setlocal list
-set listchars=tab:\┃\ ,trail:▫
+nnoremap P "+p
 " spell check
 nnoremap <leader>sc :set spell!<CR>
 " move
 inoremap <A-l> <Right>
 nnoremap <A-j> <cmd>m .+1<cr>==
 nnoremap <A-k> <cmd>m .-2<cr>==
-inoremap <A-j> <esc><cmd>m .+1<cr>==gi
-inoremap <A-k> <esc><cmd>m .-2<cr>==gi
+"inoremap <A-j> <esc><cmd>m .+1<cr>==gi
+"inoremap <A-k> <esc><cmd>m .-2<cr>==gi
 vnoremap <A-j> :m '>+1<cr>gv=gv
 vnoremap <A-k> :m '<-2<cr>gv=gv
 " change window size
@@ -90,23 +105,12 @@ noremap <up> :res +5<CR>
 noremap <down> :res -5<CR>
 noremap <left> :vertical resize-5<CR>
 noremap <right> :vertical resize+5<CR>
-" wrap line
-set colorcolumn=80
 " find next <++>
 nmap <leader><leader> /<++><CR>:noh<CR>"_c4l
-" undo
-set undofile
-set undodir=~/.config/nvim/tmp/undo
-" cursor place last time
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " cancel search highlight
 nnoremap <leader><CR> :noh<CR>
 " open init
 nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
-" close the conceal
-set conceallevel=0
-" show tabline
-set showtabline=2
 
 "my tools
 source ~/.config/nvim/tools.vim
@@ -128,6 +132,7 @@ Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " commenter
 Plug 'preservim/nerdcommenter'
 " format
@@ -215,9 +220,31 @@ let g:startify_custom_footer = [
 let g:startify_files_number = 5
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
-" -----hlchunk----
+"-----hlchunk----
 lua << EOF
 require('hlchunk').setup({
+	chunk = {
+		enable = true,
+		notify = false,
+		support_filetypes = {
+			"*.lua",
+			"*.js",
+			"*.cpp",
+			"*.c",
+			"*.py",
+		},
+		use_treesitter = true,
+		chars = {
+			horizontal_line = "─",
+			vertical_line = "│",
+			left_top = "╭",
+			left_bottom = "╰",
+			right_arrow = ">",
+		},
+		style = {
+			{ fg = "#D2691E" },
+		},
+	},
 	indent = {
 		chars = { "┃", "┃", "┃", },
 
@@ -229,12 +256,12 @@ require('hlchunk').setup({
 	},
 	line_num = {
 		enable = true,
-		use_treesitter = false,
+		use_treesitter = true,
 		style = "#FFFF00",
 	},
 	blank = {
 		enable = false,
-	}
+	},
 })
 EOF
 
@@ -354,35 +381,149 @@ call autoformat#config('python',
 call autoformat#config('html',
     \ ['html-beautify -s 2'])
 autocmd! BufWritePre * :Autoformat
-nnoremap <C-i> :call AutoFormat()<CR>:w<CR>
-inoremap <C-i> <ESC>:call AutoFormat()<CR>:w<CR>
+nnoremap <S-i> :call AutoFormat()<CR>
 func! AutoFormat()
     if &filetype == "markdown" || &filetype == "vimwiki"
         :TableModeToggle
     else
         :Autoformat
     endif
+	exec "w"
 endfunction
 
 "-----nvim-navbuddy-----
 lua <<EOF
 local navbuddy = require("nvim-navbuddy")
+local actions = require("nvim-navbuddy.actions")
 
-require("lspconfig").clangd.setup {
-    on_attach = function(client, bufnr)
-        navbuddy.attach(client, bufnr)
-    end
+navbuddy.setup {
+    window = {
+        border = "single",  -- "rounded", "double", "solid", "none"
+                            -- or an array with eight chars building up the border in a clockwise fashion
+                            -- starting with the top-left corner. eg: { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }.
+        size = "60%",       -- Or table format example: { height = "40%", width = "100%"}
+        position = "50%",   -- Or table format example: { row = "100%", col = "0%"}
+        scrolloff = nil,    -- scrolloff value within navbuddy window
+        sections = {
+            left = {
+                size = "20%",
+                border = nil, -- You can set border style for each section individually as well.
+            },
+            mid = {
+                size = "40%",
+                border = nil,
+            },
+            right = {
+                -- No size option for right most section. It fills to
+                -- remaining area.
+                border = nil,
+                preview = "leaf",  -- Right section can show previews too.
+                                   -- Options: "leaf", "always" or "never"
+            }
+        },
+    },
+    node_markers = {
+        enabled = true,
+        icons = {
+            leaf = "  ",
+            leaf_selected = " → ",
+            branch = " ",
+        },
+    },
+    icons = {
+        File          = "󰈙 ",
+        Module        = " ",
+        Namespace     = "󰌗 ",
+        Package       = " ",
+        Class         = "󰌗 ",
+        Method        = "󰆧 ",
+        Property      = " ",
+        Field         = " ",
+        Constructor   = " ",
+        Enum          = "󰕘",
+        Interface     = "󰕘",
+        Function      = "󰊕 ",
+        Variable      = "󰆧 ",
+        Constant      = "󰏿 ",
+        String        = " ",
+        Number        = "󰎠 ",
+        Boolean       = "◩ ",
+        Array         = "󰅪 ",
+        Object        = "󰅩 ",
+        Key           = "󰌋 ",
+        Null          = "󰟢 ",
+        EnumMember    = " ",
+        Struct        = "󰌗 ",
+        Event         = " ",
+        Operator      = "󰆕 ",
+        TypeParameter = "󰊄 ",
+    },
+    lsp = {
+        auto_attach = true,   -- If set to true, you don't need to manually use attach function
+        preference = nil,      -- list of lsp server names in order of preference
+    },
+    source_buffer = {
+        follow_node = true,    -- Keep the current node in focus on the source buffer
+        highlight = true,      -- Highlight the currently focused node
+        reorient = "smart",    -- "smart", "top", "mid" or "none"
+        scrolloff = nil        -- scrolloff value when navbuddy is open
+    }
 }
 EOF
 nmap \n :Navbuddy<CR>
 
+"-------treesitter-------
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the five listed parsers should always be installed)
+  ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  -- List of parsers to ignore installing (for "all")
+  ignore_install = { "javascript" },
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+	enable = true,
+
+	-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+	-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+	-- the name of the parser)
+	-- list of language that will be disabled
+	disable = { "c", "rust", "cpp" },
+	-- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+	disable = function(lang, buf)
+		local max_filesize = 100 * 1024 -- 100 KB
+		local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+		if ok and stats and stats.size > max_filesize then
+			return true
+		end
+	end,
+
+	-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+	-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+	-- Using this option may slow down your editor, and you may see some duplicate highlights.
+	-- Instead of true it can also be a list of languages
+	additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+
 "----competitest----
 lua require('competitest').setup()
-autocmd FileType cpp,python nmap rr :CompetiTestRun<CR>
-autocmd FileType cpp,python nmap ra :CompetiTestAdd<CR>
-autocmd FileType cpp,python nmap re :CompetiTestEdit<CR>
-autocmd FileType cpp,python nmap ri :CompetiTestReceive testcases<CR>
-autocmd FileType cpp,python nmap rd :CompetiTestDelete<CR>
+autocmd FileType cpp,python nnoremap rr :CompetiTestRun<CR>
+autocmd FileType cpp,python nnoremap ra :CompetiTestAdd<CR>
+autocmd FileType cpp,python nnoremap re :CompetiTestEdit<CR>
+autocmd FileType cpp,python nnoremap ri :CompetiTestReceive testcases<CR>
+autocmd FileType cpp,python nnoremap rd :CompetiTestDelete<CR>
 
 "-----markdown-----
 autocmd FileType markdown set wrap
@@ -407,6 +548,7 @@ autocmd FileType vimwiki set wrap
 
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>
+nnoremap <leader>fk :Telescope keymaps<CR>
 nnoremap <leader>fg :Telescope grep_string<CR>
 
 " ----tree----
@@ -467,4 +609,4 @@ nmap ga <Plug>(EasyAlign)
 cnoreabbrev sw w suda://%
 
 "-----goyo--------
-nnoremap gy :Goyo<CR>
+nnoremap <leader>gy :Goyo<CR>
