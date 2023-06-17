@@ -50,8 +50,9 @@ set notimeout
 set virtualedit=block
 " close the conceal
 set conceallevel=0
-" show tabline
+" show blines
 set showtabline=2
+set laststatus=2
 " show tab and space
 set list
 set listchars=tab:\┃\ ,trail:▫
@@ -64,12 +65,18 @@ set undofile
 set undodir=~/.config/nvim/tmp/undo
 " cursor place last time
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" auto change dir
+autocmd BufEnter * silent! lcd %:p:h
 " change defualt key
 noremap s <nop>
 nnoremap C cl
 nnoremap Q :q<cr>
-nnoremap W :w<cr>
 nnoremap B :bd<cr>
+nnoremap W :w<cr>
+nnoremap I 0
+nnoremap A $
+nnoremap J 5j
+nnoremap K 5k
 " windows operation
 noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 noremap sj :set splitbelow<CR>:split<CR>
@@ -83,13 +90,18 @@ nmap <leader>l <C-w>l
 nmap <leader>sw :set wrap!<CR>
 noremap j gj
 noremap k gk
-" change buffer
+" change buffers & tabs
 nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
+noremap tu :tabe<CR>
+noremap tU :tab split<CR>
+noremap tj :+tabnext<CR>
+noremap tk :-tabnext<CR>
+noremap tmj :+tabmove<CR>
+noremap tmk :-tabmove<CR>
 " copy and paste
 "set clipboard=unnamedplus
 vnoremap Y "+y
-nnoremap P "+p
 " spell check
 nnoremap <leader>sc :set spell!<CR>
 " move
@@ -110,7 +122,7 @@ nmap <leader><leader> /<++><CR>:noh<CR>"_c4l
 " cancel search highlight
 nnoremap <leader><CR> :noh<CR>
 " open init
-nnoremap <leader>vim :edit ~/.config/nvim/init.vim<CR>
+nnoremap <leader>vim :tabe ~/.config/nvim/init.vim<CR>
 
 "my tools
 source ~/.config/nvim/tools.vim
@@ -179,8 +191,7 @@ Plug 'mhinz/vim-startify'
 Plug 'rcarriga/nvim-notify'
 " lines
 Plug 'shellRaining/hlchunk.nvim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'nvim-lualine/lualine.nvim'
 Plug 'mg979/vim-xtabline'
 " theme
 Plug 'morhetz/gruvbox'
@@ -220,7 +231,7 @@ let g:startify_custom_footer = [
 let g:startify_files_number = 5
 let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
-"-----hlchunk----
+"--- hlchunk ---
 lua << EOF
 require('hlchunk').setup({
 	chunk = {
@@ -233,12 +244,12 @@ require('hlchunk').setup({
 			"*.c",
 			"*.py",
 		},
-		use_treesitter = true,
+		use_treesitter = false,
 		chars = {
-			horizontal_line = "─",
-			vertical_line = "│",
-			left_top = "╭",
-			left_bottom = "╰",
+			horizontal_line = "━",
+			vertical_line = "┃",
+			left_top = "┏",
+			left_bottom = "┗",
 			right_arrow = ">",
 		},
 		style = {
@@ -256,7 +267,7 @@ require('hlchunk').setup({
 	},
 	line_num = {
 		enable = true,
-		use_treesitter = true,
+		use_treesitter = false,
 		style = "#FFFF00",
 	},
 	blank = {
@@ -265,53 +276,243 @@ require('hlchunk').setup({
 })
 EOF
 
-"-----airline----
-let g:airline_theme='bubblegum'
-let g:airline_powerline_fonts = 1
-" open tabline
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ' '
-"let g:airline#extensions#tabline#left_alt_sep = '|'
+"-----lualine----
+lua << EOF
+-- Eviline config for lualine
+-- Author: shadmansaleh
+-- Credit: glepnir
+local lualine = require('lualine')
+
+-- Color table for highlights
+-- stylua: ignore
+local colors = {
+  bg       = '#202328',
+  fg       = '#bbc2cf',
+  yellow   = '#ECBE7B',
+  cyan     = '#008080',
+  darkblue = '#081633',
+  green    = '#98be65',
+  orange   = '#FF8800',
+  violet   = '#a9a1e1',
+  magenta  = '#c678dd',
+  blue     = '#51afef',
+  red      = '#ec5f67',
+}
+
+local conditions = {
+  buffer_not_empty = function()
+    return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
+  end,
+  hide_in_width = function()
+    return vim.fn.winwidth(0) > 80
+  end,
+  check_git_workspace = function()
+    local filepath = vim.fn.expand('%:p:h')
+    local gitdir = vim.fn.finddir('.git', filepath .. ';')
+    return gitdir and #gitdir > 0 and #gitdir < #filepath
+  end,
+}
+
+-- Config
+local config = {
+  options = {
+    -- Disable sections and component separators
+    component_separators = '',
+    section_separators = '',
+    theme = {
+      -- We are going to use lualine_c an lualine_x as left and
+      -- right section. Both are highlighted by c theme .  So we
+      -- are just setting default looks o statusline
+      normal = { c = { fg = colors.fg, bg = colors.bg } },
+      inactive = { c = { fg = colors.fg, bg = colors.bg } },
+    },
+  },
+  sections = {
+    -- these are to remove the defaults
+    lualine_a = {},
+    lualine_b = {},
+    lualine_y = {},
+    lualine_z = {},
+    -- These will be filled later
+    lualine_c = {},
+    lualine_x = {},
+  },
+  inactive_sections = {
+    -- these are to remove the defaults
+    lualine_a = {},
+    lualine_b = {},
+    lualine_y = {},
+    lualine_z = {},
+    lualine_c = {},
+    lualine_x = {},
+  },
+}
+
+-- Inserts a component in lualine_c at left section
+local function ins_left(component)
+  table.insert(config.sections.lualine_c, component)
+end
+
+-- Inserts a component in lualine_x at right section
+local function ins_right(component)
+  table.insert(config.sections.lualine_x, component)
+end
+
+ins_left {
+  function()
+    return '▊'
+  end,
+  color = { fg = colors.blue }, -- Sets highlighting of component
+  padding = { left = 0, right = 1 }, -- We don't need space before this
+}
+
+ins_left {
+  -- mode component
+  function()
+    return '󰣇'
+  end,
+  color = function()
+    -- auto change color according to neovims mode
+    local mode_color = {
+      n = colors.red,
+      i = colors.green,
+      v = colors.blue,
+      [''] = colors.blue,
+      V = colors.blue,
+      c = colors.magenta,
+      no = colors.red,
+      s = colors.orange,
+      S = colors.orange,
+      [''] = colors.orange,
+      ic = colors.yellow,
+      R = colors.violet,
+      Rv = colors.violet,
+      cv = colors.red,
+      ce = colors.red,
+      r = colors.cyan,
+      rm = colors.cyan,
+      ['r?'] = colors.cyan,
+      ['!'] = colors.red,
+      t = colors.red,
+    }
+    return { fg = mode_color[vim.fn.mode()] }
+  end,
+  padding = { right = 1 },
+}
+
+ins_left {
+  -- filesize component
+  'filesize',
+  cond = conditions.buffer_not_empty,
+}
+
+ins_left {
+  'filename',
+  cond = conditions.buffer_not_empty,
+  color = { fg = colors.magenta, gui = 'bold' },
+}
+
+ins_left { 'location' }
+
+ins_left { 'progress', color = { fg = colors.fg, gui = 'bold' } }
+
+ins_left {
+  'diagnostics',
+  sources = { 'nvim_diagnostic' },
+  symbols = { error = ' ', warn = ' ', info = ' ' },
+  diagnostics_color = {
+    color_error = { fg = colors.red },
+    color_warn = { fg = colors.yellow },
+    color_info = { fg = colors.cyan },
+  },
+}
+
+-- Insert mid section. You can make any number of sections in neovim :)
+-- for lualine it's any number greater then 2
+ins_left {
+  function()
+    return '%='
+  end,
+}
+
+--ins_left {
+--  -- Lsp server name .
+--  function()
+--    local msg = 'No Active Lsp'
+--    local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+--    local clients = vim.lsp.get_active_clients()
+--    if next(clients) == nil then
+--      return msg
+--    end
+--    for _, client in ipairs(clients) do
+--      local filetypes = client.config.filetypes
+--      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+--        return client.name
+--      end
+--    end
+--    return msg
+--  end,
+--  icon = ' LSP:',
+--  color = { fg = '#ffffff', gui = 'bold' },
+--}
+
+-- Add components to right sections
+ins_right {
+  'o:encoding', -- option component same as &encoding in viml
+  fmt = string.upper, -- I'm not sure why it's upper case either ;)
+  cond = conditions.hide_in_width,
+  color = { fg = colors.green, gui = 'bold' },
+}
+
+ins_right {
+  'fileformat',
+  fmt = string.upper,
+  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+  color = { fg = colors.green, gui = 'bold' },
+}
+
+ins_right {
+  'branch',
+  icon = '',
+  color = { fg = colors.violet, gui = 'bold' },
+}
+
+ins_right {
+  'diff',
+  -- Is it me or the symbol for modified us really weird
+  symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
+  diff_color = {
+    added = { fg = colors.green },
+    modified = { fg = colors.orange },
+    removed = { fg = colors.red },
+  },
+  cond = conditions.hide_in_width,
+}
+
+ins_right {
+  function()
+    return '▊'
+  end,
+  color = { fg = colors.blue },
+  padding = { left = 1 },
+}
+
+-- Now don't forget to initialize lualine
+lualine.setup(config)
+EOF
 
 "-----xtabline----
 let g:xtabline_settings = {}
 let g:xtabline_settings.enable_mappings = 0
-let g:xtabline_settings.tabline_modes = ['buffers']
+let g:xtabline_settings.tabline_modes = ['tabs','buffers']
 let g:xtabline_settings.enable_persistance = 0
 let g:xtabline_settings.last_open_first = 0
+let g:xtabline_settings.tab_number_in_left_corner = 0
+let g:xtabline_settings.show_right_corner = 1
 let g:xtabline_settings.theme='slate'
 
 "----theme----
 colorscheme gruvbox
-
-"-----rainbow-----
-" 1. vscode defult 2. author defult 3. vscode show
-"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
-"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- let g:rainbow_conf = {
- \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
- \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
- \	'operators': '_,_',
- \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
- \	'separately': {
- \		'*': {},
- \		'tex': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
- \		},
- \		'lisp': {
- \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
- \		},
- \		'vim': {
- \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
- \		},
- \		'html': {
- \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
- \		},
- \		'css': 0,
- \	}
- \}
-let g:rainbow_active = 1
 
 " =====code=====
 "-----coc.nvim-----
@@ -353,7 +554,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> K :call ShowDocumentation()<CR>
+nnoremap <silent> <c-h> :call ShowDocumentation()<CR>
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -381,7 +582,7 @@ call autoformat#config('python',
 call autoformat#config('html',
     \ ['html-beautify -s 2'])
 autocmd! BufWritePre * :Autoformat
-nnoremap <S-i> :call AutoFormat()<CR>
+nnoremap <C-S-i> :call AutoFormat()<CR>
 func! AutoFormat()
     if &filetype == "markdown" || &filetype == "vimwiki"
         :TableModeToggle
@@ -396,126 +597,112 @@ lua <<EOF
 local navbuddy = require("nvim-navbuddy")
 local actions = require("nvim-navbuddy.actions")
 
-navbuddy.setup {
-    window = {
-        border = "single",  -- "rounded", "double", "solid", "none"
-                            -- or an array with eight chars building up the border in a clockwise fashion
-                            -- starting with the top-left corner. eg: { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }.
-        size = "60%",       -- Or table format example: { height = "40%", width = "100%"}
-        position = "50%",   -- Or table format example: { row = "100%", col = "0%"}
-        scrolloff = nil,    -- scrolloff value within navbuddy window
-        sections = {
-            left = {
-                size = "20%",
-                border = nil, -- You can set border style for each section individually as well.
-            },
-            mid = {
-                size = "40%",
-                border = nil,
-            },
-            right = {
-                -- No size option for right most section. It fills to
-                -- remaining area.
-                border = nil,
-                preview = "leaf",  -- Right section can show previews too.
-                                   -- Options: "leaf", "always" or "never"
-            }
-        },
-    },
-    node_markers = {
-        enabled = true,
-        icons = {
-            leaf = "  ",
-            leaf_selected = " → ",
-            branch = " ",
-        },
-    },
-    icons = {
-        File          = "󰈙 ",
-        Module        = " ",
-        Namespace     = "󰌗 ",
-        Package       = " ",
-        Class         = "󰌗 ",
-        Method        = "󰆧 ",
-        Property      = " ",
-        Field         = " ",
-        Constructor   = " ",
-        Enum          = "󰕘",
-        Interface     = "󰕘",
-        Function      = "󰊕 ",
-        Variable      = "󰆧 ",
-        Constant      = "󰏿 ",
-        String        = " ",
-        Number        = "󰎠 ",
-        Boolean       = "◩ ",
-        Array         = "󰅪 ",
-        Object        = "󰅩 ",
-        Key           = "󰌋 ",
-        Null          = "󰟢 ",
-        EnumMember    = " ",
-        Struct        = "󰌗 ",
-        Event         = " ",
-        Operator      = "󰆕 ",
-        TypeParameter = "󰊄 ",
-    },
-    lsp = {
-        auto_attach = true,   -- If set to true, you don't need to manually use attach function
-        preference = nil,      -- list of lsp server names in order of preference
-    },
-    source_buffer = {
-        follow_node = true,    -- Keep the current node in focus on the source buffer
-        highlight = true,      -- Highlight the currently focused node
-        reorient = "smart",    -- "smart", "top", "mid" or "none"
-        scrolloff = nil        -- scrolloff value when navbuddy is open
-    }
+require("lspconfig").clangd.setup {
+	navbuddy.setup {
+		window = {
+			border = "single",  -- "rounded", "double", "solid", "none"
+								-- or an array with eight chars building up the border in a clockwise fashion
+								-- starting with the top-left corner. eg: { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }.
+			size = "60%",       -- Or table format example: { height = "40%", width = "100%"}
+			position = "50%",   -- Or table format example: { row = "100%", col = "0%"}
+			scrolloff = nil,    -- scrolloff value within navbuddy window
+			sections = {
+				left = {
+					size = "20%",
+					border = nil, -- You can set border style for each section individually as well.
+				},
+				mid = {
+					size = "40%",
+					border = nil,
+				},
+				right = {
+					-- No size option for right most section. It fills to
+					-- remaining area.
+					border = nil,
+					preview = "leaf",  -- Right section can show previews too.
+									   -- Options: "leaf", "always" or "never"
+				}
+			},
+		},
+		node_markers = {
+			enabled = true,
+			icons = {
+				leaf = "  ",
+				leaf_selected = " → ",
+				branch = " ",
+			},
+		},
+		icons = {
+			File          = "󰈙 ",
+			Module        = " ",
+			Namespace     = "󰌗 ",
+			Package       = " ",
+			Class         = "󰌗 ",
+			Method        = "󰆧 ",
+			Property      = " ",
+			Field         = " ",
+			Constructor   = " ",
+			Enum          = "󰕘",
+			Interface     = "󰕘",
+			Function      = "󰊕 ",
+			Variable      = "󰆧 ",
+			Constant      = "󰏿 ",
+			String        = " ",
+			Number        = "󰎠 ",
+			Boolean       = "◩ ",
+			Array         = "󰅪 ",
+			Object        = "󰅩 ",
+			Key           = "󰌋 ",
+			Null          = "󰟢 ",
+			EnumMember    = " ",
+			Struct        = "󰌗 ",
+			Event         = " ",
+			Operator      = "󰆕 ",
+			TypeParameter = "󰊄 ",
+		},
+		lsp = {
+			auto_attach = true,   -- If set to true, you don't need to manually use attach function
+			preference = nil,      -- list of lsp server names in order of preference
+		},
+		source_buffer = {
+			follow_node = true,    -- Keep the current node in focus on the source buffer
+			highlight = true,      -- Highlight the currently focused node
+			reorient = "smart",    -- "smart", "top", "mid" or "none"
+			scrolloff = nil        -- scrolloff value when navbuddy is open
+		}
+	}
 }
 EOF
 nmap \n :Navbuddy<CR>
 
-"-------treesitter-------
-lua << EOF
-require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query" },
-
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = true,
-
-  -- List of parsers to ignore installing (for "all")
-  ignore_install = { "javascript" },
-
-  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-  highlight = {
-	enable = true,
-
-	-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-	-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-	-- the name of the parser)
-	-- list of language that will be disabled
-	disable = { "c", "rust", "cpp" },
-	-- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-	disable = function(lang, buf)
-		local max_filesize = 100 * 1024 -- 100 KB
-		local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-		if ok and stats and stats.size > max_filesize then
-			return true
-		end
-	end,
-
-	-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-	-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-	-- Using this option may slow down your editor, and you may see some duplicate highlights.
-	-- Instead of true it can also be a list of languages
-	additional_vim_regex_highlighting = false,
-  },
-}
-EOF
+"-----rainbow-----
+" 1. vscode defult 2. author defult 3. vscode show
+"	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
+"	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+"	\	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ let g:rainbow_conf = {
+ \	'guifgs': ['#C186BF', '#268EDB','#F79318'],
+ \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+ \	'operators': '_,_',
+ \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+ \	'separately': {
+ \		'*': {},
+ \		'tex': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+ \		},
+ \		'lisp': {
+ \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+ \		},
+ \		'vim': {
+ \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+ \		},
+ \		'html': {
+ \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+ \		},
+ \		'css': 0,
+ \	}
+ \}
+let g:rainbow_active = 1
 
 "----competitest----
 lua require('competitest').setup()
@@ -549,6 +736,7 @@ autocmd FileType vimwiki set wrap
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>fk :Telescope keymaps<CR>
+nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fg :Telescope grep_string<CR>
 
 " ----tree----
