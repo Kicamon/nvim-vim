@@ -26,9 +26,22 @@ let mapleader = "\<space>"
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set t_CO=256
-"hi NonText ctermfg=gray guifg=grey10
-"hi NormalFloat guifg=LightGreen guibg=Green
-"highlight NotifyBackground guibg=#000000
+" ==================== Terminal Colors ====================
+let g:terminal_color_0  = '#000000'
+let g:terminal_color_1  = '#FF5555'
+let g:terminal_color_2  = '#50FA7B'
+let g:terminal_color_3  = '#F1FA8C'
+let g:terminal_color_4  = '#BD93F9'
+let g:terminal_color_5  = '#FF79C6'
+let g:terminal_color_6  = '#8BE9FD'
+let g:terminal_color_7  = '#BFBFBF'
+let g:terminal_color_8  = '#4D4D4D'
+let g:terminal_color_9  = '#FF6E67'
+let g:terminal_color_10 = '#5AF78E'
+let g:terminal_color_11 = '#F4F99D'
+let g:terminal_color_12 = '#CAA9FA'
+let g:terminal_color_13 = '#FF92D0'
+let g:terminal_color_14 = '#9AEDFE'
 " highlight
 syntax on
 set cursorline
@@ -52,7 +65,7 @@ set notimeout
 set virtualedit=block
 " close the conceal
 set conceallevel=0
-" show blines
+" show lines
 set showtabline=2
 set laststatus=2
 " show tab and space
@@ -62,8 +75,9 @@ set listchars=tab:\┃\ ,trail:▫
 set scrolloff=6
 " wrap line
 set colorcolumn=80
-"cmdhight
+"cmd
 set cmdheight=1
+set noshowmode
 " undo
 set undofile
 set undodir=~/.config/nvim/tmp/undo
@@ -71,16 +85,16 @@ set undodir=~/.config/nvim/tmp/undo
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " auto change dir
 autocmd BufEnter * silent! lcd %:p:h
-" change defualt key
+" change default key
 noremap s <nop>
 nnoremap C cl
 nnoremap Q :q<cr>
 nnoremap B :bd<cr>
 nnoremap W :w<cr>
-nnoremap I 0
-nnoremap A $
-nnoremap J 5j
-nnoremap K 5k
+noremap I 0
+vnoremap A $
+nnoremap J 10j
+nnoremap K 10k
 " windows operation
 noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 noremap sj :set splitbelow<CR>:split<CR>
@@ -90,14 +104,16 @@ nmap <leader>h <C-w>h
 nmap <leader>j <C-w>j
 nmap <leader>k <C-w>k
 nmap <leader>l <C-w>l
+nmap smv <C-w>t<c-W>H
+nmap smh <C-w>t<c-W>K
 " wrap
 nmap <leader>sw :set wrap!<CR>
-noremap j gj
-noremap k gk
+nnoremap <expr>j (v:count==0?"gj":"j")
+nnoremap <expr>k (v:count==0?"gk":"k")
 " change buffers & tabs
 nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
-nnoremap tu :tabe<CR>:edit 
+nnoremap tu :tabe<CR>:edit<space>
 nnoremap tU :tab split<CR>
 nnoremap tj :+tabnext<CR>
 nnoremap tk :-tabnext<CR>
@@ -108,7 +124,6 @@ nnoremap tmk :-tabmove<CR>
 vnoremap Y "+y
 " spell check
 nnoremap <leader>sc :set spell!<CR>
-let g:lualine_spell=0
 " move
 inoremap <A-l> <Right>
 nnoremap <A-j> <cmd>m .+1<cr>==
@@ -147,9 +162,10 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'SmiteshP/nvim-navic'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
-Plug 'iamcco/vim-language-server'
 Plug 'xeluxee/competitest.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" heilight
+Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': ['python', 'vim-plug'] }
 " commenter
 Plug 'preservim/nerdcommenter'
 " format
@@ -161,10 +177,11 @@ Plug 'SmiteshP/nvim-navbuddy'
 " acm
 Plug 'xeluxee/competitest.nvim'
 "-----markdown&note-----
-Plug 'dhruvasagar/vim-table-mode'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'img-paste-devs/img-paste.vim'
+Plug 'dhruvasagar/vim-table-mode',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
+Plug 'mzlogin/vim-markdown-toc',{ 'for': ['markdown','vimwiki'] }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': ['markdown','vimwiki', 'vim-plug'] }
+Plug 'img-paste-devs/img-paste.vim',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
+Plug 'dkarter/bullets.vim',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'vimwiki/vimwiki'
 "-------edit------
 " quick chose text
@@ -174,9 +191,6 @@ Plug 'tpope/vim-surround'
 " search files
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-" tree
-Plug 'preservim/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 " git
 Plug 'lewis6991/gitsigns.nvim'
 " more cursors
@@ -194,11 +208,12 @@ Plug 'junegunn/vim-easy-align'
 Plug 'mhinz/vim-startify'
 " notify
 Plug 'rcarriga/nvim-notify'
-" lines
+" lines and bar
 Plug 'shellRaining/hlchunk.nvim'
 Plug 'nvim-lualine/lualine.nvim'
-"Plug 'vim-airline/vim-airline'
 Plug 'mg979/vim-xtabline'
+Plug 'petertriho/nvim-scrollbar'
+Plug 'kevinhwang91/nvim-hlslens'
 " theme
 Plug 'morhetz/gruvbox'
 " icons
@@ -292,7 +307,7 @@ local lualine = require('lualine')
 -- Color table for highlights
 -- stylua: ignore
 local colors = {
-  bg       = '#444444',
+  bg       = '#3c3836',
   fg       = '#bbc2cf',
   yellow   = '#F0E68C',
   cyan     = '#008080',
@@ -306,6 +321,7 @@ local colors = {
   pink     = '#FF69B4',
   snow     = '#FFFAFA',
   black    = '#000000',
+  none     = '#282828',
 }
 
 local conditions = {
@@ -368,6 +384,38 @@ local function ins_right(component)
 end
 
 ins_left {
+	function()
+		return ''
+	end,
+	padding = { right = 0 },
+	color = function()
+	local mode_color = {
+		n = colors.green,
+		i = colors.violet,
+		v = colors.yellow,
+		[''] = colors.yellow,
+		V = colors.yellow,
+		c = colors.magenta,
+		no = colors.red,
+		s = colors.orange,
+		S = colors.orange,
+		[''] = colors.orange,
+		ic = colors.yellow,
+		R = colors.violet,
+		Rv = colors.violet,
+		cv = colors.red,
+		ce = colors.red,
+		r = colors.cyan,
+		rm = colors.cyan,
+		['r?'] = colors.cyan,
+		['!'] = colors.red,
+		t = colors.red,
+	}
+	return { fg = mode_color[vim.fn.mode()], gui='bold' }
+	end,
+}
+
+ins_left {
 	'mode',
 	icon = '󰕷',
 	color = function()
@@ -375,8 +423,8 @@ ins_left {
 		n = colors.green,
 		i = colors.violet,
 		v = colors.yellow,
-		[''] = colors.blue,
-		V = colors.blue,
+		[''] = colors.yellow,
+		V = colors.yellow,
 		c = colors.magenta,
 		no = colors.red,
 		s = colors.orange,
@@ -399,15 +447,15 @@ ins_left {
 
 ins_left {
 	function()
-		return ''
+		return ''
 	end,
 	color = function()
 	local mode_color = {
 		n = colors.green,
 		i = colors.violet,
 		v = colors.yellow,
-		[''] = colors.blue,
-		V = colors.blue,
+		[''] = colors.yellow,
+		V = colors.yellow,
 		c = colors.magenta,
 		no = colors.red,
 		s = colors.orange,
@@ -426,7 +474,6 @@ ins_left {
 	}
 	return { fg = mode_color[vim.fn.mode()], gui='bold' }
 	end,
-	component_separators = { left = '', right = ''},
 	padding = { left = 0}
 }
 
@@ -435,19 +482,19 @@ ins_left {
 		if(vim.wo.spell) then
 			return "SPELL"
 		else
-			return "!SPELL"
+			return ""
 		end
 	end,
-	icon = '',
+	icon = '󰓆',
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.violet, gui = 'bold' },
+	color = { fg = colors.red, gui = 'bold' },
 }
 
 ins_left {
 	function()
 		return 'SIZE: '
 	end,
-	color = { fg = colors.violet, gui = 'bold' }, -- Sets highlighting of component
+	color = { fg = colors.red, gui = 'bold' }, -- Sets highlighting of component
 	padding = { left = 1, right = 0 }
 }
 
@@ -523,7 +570,16 @@ ins_right {
 }
 
 ins_right {
+	function()
+		return ''
+	end,
+	padding = { right = 0 },
+	color = { fg = colors.green, gui = 'bold' },
+}
+
+ins_right {
 	'progress',
+	icon = '',
 	color = { fg = colors.bg, bg = colors.green, gui = 'bold' },
 }
 
@@ -536,9 +592,9 @@ ins_right {
 
 ins_right {
   function()
-	return '▊'
+	return ''
   end,
-  color = { fg = colors.green },
+  color = { bg = colors.none, fg = colors.green },
   padding = { left = 0 },
 }
 
@@ -556,6 +612,42 @@ let g:xtabline_settings.tab_number_in_left_corner = 0
 let g:xtabline_settings.show_right_corner = 1
 let g:xtabline_settings.theme='slate'
 
+"----- nvim-scrollbar ---
+lua <<EOF
+require("scrollbar").setup()
+require("scrollbar.handlers.search").setup()
+require("scrollbar").setup({
+	show = true,
+	handle = {
+		text = " ",
+		color = "#928374",
+		hide_if_all_visible = true,
+	},
+	marks = {
+		Search = { color = "yellow" },
+		Misc = { color = "purple" },
+	},
+	handlers = {
+		cursor = true,
+		diagnostic = true,
+		gitsigns = true,
+		handle = true,
+		search = true,
+	},
+})
+EOF
+
+"----- nvim-hlslens ---
+" ==================== nvim-hlslens ====================
+noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap * *<Cmd>lua require('hlslens').start()<CR>
+noremap # #<Cmd>lua require('hlslens').start()<CR>
+noremap g* g*<Cmd>lua require('hlslens').start()<CR>
+noremap g# g#<Cmd>lua require('hlslens').start()<CR>
+
 "----theme----
 colorscheme gruvbox
 
@@ -563,22 +655,25 @@ colorscheme gruvbox
 "-----coc.nvim-----
 let g:coc_global_extensions = [
         \ 'coc-clangd',
-        \ 'coc-python',
-        \ 'coc-lua',
-        \ 'coc-snippets',
-        \ 'coc-vimlsp',
-        \ 'coc-translator',
-        \ 'coc-pairs',
-        \ 'coc-highlight',
         \ 'coc-css',
+        \ 'coc-flutter',
+        \ 'coc-html',
         \ 'coc-json',
+        \ 'coc-lua',
+        \ 'coc-pairs',
+        \ 'coc-pyright',
+        \ 'coc-snippets',
+        \ 'coc-translator',
         \ 'coc-texlab',
+        \ 'coc-vimlsp',
+        \ 'coc-explorer',
       \ ]
 "set helpfile
 set nobackup
 set nowritebackup
 set pumheight=10
 set updatetime=100
+highlight CocFloating ctermbg=Black
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
       \ CheckBackspace() ? "\<Tab>" :
@@ -599,7 +694,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> <c-h> :call ShowDocumentation()<CR>
+nnoremap <silent> <c-p> :call ShowDocumentation()<CR>
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -612,6 +707,7 @@ nmap <leader>rn <Plug>(coc-rename)
 nmap ts <Plug>(coc-translator-p)
 let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
+nmap <F12> :CocCommand explorer<CR>
 
 "-----nerdcommenter-----
 "map \c <leader>cc
@@ -720,6 +816,18 @@ require("lspconfig").clangd.setup {
 EOF
 nmap \n :Navbuddy<CR>
 
+"---- nvim-treesitter -----
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+	-- one of "all", "language", or a list of languages
+	ensure_installed = {"typescript", "dart", "java", "c", "cpp", "prisma", "bash", "go"},
+	highlight = {
+		enable = false,              -- false will disable the whole extension
+		disable = { "rust" },  -- list of language that will be disabled
+	},
+}
+EOF
+
 "-----rainbow-----
 " 1. vscode defult 2. author defult 3. vscode show
 "	\	'guifgs': ['#B21212', '#1B9CED','#FFFC00'],
@@ -771,6 +879,30 @@ autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 autocmd FileType markdown let g:PasteImageFunction = 'g:MarkdownPasteImage'
 autocmd FileType tex let g:PasteImageFunction = 'g:LatexPasteImage'
+" Bullets
+let g:bullets_enabled_file_types = [
+    \ 'markdown',
+    \ 'text',
+    \ 'gitcommit',
+    \ 'scratch'
+    \]
+let g:bullets_outline_levels = ['num']
+let g:bullets_set_mappings = 0
+let g:bullets_mapping_leader = '<M-b>'
+let g:bullets_custom_mappings = [
+	\ ['imap', '<cr>', '<Plug>(bullets-newline)'],
+	\ ['inoremap', '<C-cr>', '<cr>'],
+	\
+	\ ['nmap', 'o', '<Plug>(bullets-newline)'],
+	\
+	\ ['vmap', 'gN', '<Plug>(bullets-renumber)'],
+	\ ['nmap', 'gN', '<Plug>(bullets-renumber)'],
+	\
+	\ ['nmap', '<leader>x', '<Plug>(bullets-toggle-checkbox)'],
+	\
+	\ ['imap', '<C-=>', '<Plug>(bullets-demote)'],
+	\ ['imap', '<C-->', '<Plug>(bullets-promote)'],
+	\ ]
 
 "----vinwiki----
 let g:vimwiki_list = [{'path': '~/Documents/study/Note/vimwiki/',
@@ -783,24 +915,6 @@ nnoremap <leader>ff :Telescope find_files<CR>
 nnoremap <leader>fk :Telescope keymaps<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fg :Telescope grep_string<CR>
-
-" ----tree----
-let g:NERDTreeWinPos = "right"
-noremap <F12> :NERDTreeToggle<CR>
-
-let g:NERDTreeGitStatusUseNerdFonts = 1
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-                \ 'Modified'  :'✹',
-                \ 'Staged'    :'✚',
-                \ 'Untracked' :'✭',
-                \ 'Renamed'   :'➜',
-                \ 'Unmerged'  :'═',
-                \ 'Deleted'   :'✖',
-                \ 'Dirty'     :'✗',
-                \ 'Ignored'   :'☒',
-                \ 'Clean'     :'✔︎',
-                \ 'Unknown'   :'?',
-                \ }
 
 "-----gitsigns.nvim-----
 lua <<EOF

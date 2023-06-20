@@ -1,4 +1,19 @@
 {
+	"suggest.floatConfig": {
+		"border": true,
+		"rounded": true,
+		"focusable": false
+	},
+	"diagnostic.floatConfig": {
+		"border": true,
+		"rounded": true,
+		"focusable": false
+	},
+	"floatFactory.floatConfig": {
+		"border": true,
+		"rounded": true,
+		"focusable": false
+	},
 	"snippets.ultisnips.pythonPrompt": false,
 	"coc.preferences.extensionUpdateCheck": "daily",
 	"suggest.noselect": true,
