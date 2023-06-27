@@ -25,23 +25,8 @@ let mapleader = "\<space>"
 " color
 set termguicolors
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+let &t_ut=''
 set t_CO=256
-" ==================== Terminal Colors ====================
-let g:terminal_color_0  = '#000000'
-let g:terminal_color_1  = '#FF5555'
-let g:terminal_color_2  = '#50FA7B'
-let g:terminal_color_3  = '#F1FA8C'
-let g:terminal_color_4  = '#BD93F9'
-let g:terminal_color_5  = '#FF79C6'
-let g:terminal_color_6  = '#8BE9FD'
-let g:terminal_color_7  = '#BFBFBF'
-let g:terminal_color_8  = '#4D4D4D'
-let g:terminal_color_9  = '#FF6E67'
-let g:terminal_color_10 = '#5AF78E'
-let g:terminal_color_11 = '#F4F99D'
-let g:terminal_color_12 = '#CAA9FA'
-let g:terminal_color_13 = '#FF92D0'
-let g:terminal_color_14 = '#9AEDFE'
 " highlight
 syntax on
 set cursorline
@@ -75,6 +60,8 @@ set listchars=tab:\┃\ ,trail:▫
 set scrolloff=6
 " wrap line
 set colorcolumn=80
+"window line
+set fillchars=vert:\│
 "cmd
 set cmdheight=1
 set noshowmode
@@ -95,10 +82,11 @@ noremap I 0
 vnoremap A $
 nnoremap J 10j
 nnoremap K 10k
+vnoremap N :normal 
 " windows operation
-noremap sh :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
+noremap sh :set nosplitright<CR>:vsplit<CR>
 noremap sj :set splitbelow<CR>:split<CR>
-noremap sk :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
+noremap sk :set nosplitbelow<CR>:split<CR>
 noremap sl :set splitright<CR>:vsplit<CR>
 nmap <leader>h <C-w>h
 nmap <leader>j <C-w>j
@@ -106,6 +94,9 @@ nmap <leader>k <C-w>k
 nmap <leader>l <C-w>l
 nmap smv <C-w>t<c-W>H
 nmap smh <C-w>t<c-W>K
+autocmd TermOpen term://* startinsert
+tnoremap <C-n> <C-\><C-N>
+tnoremap <C-o> <C-\><C-N><C-O>
 " wrap
 nmap <leader>sw :set wrap!<CR>
 nnoremap <expr>j (v:count==0?"gj":"j")
@@ -115,10 +106,10 @@ nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
 nnoremap tu :tabe<CR>:edit<space>
 nnoremap tU :tab split<CR>
-nnoremap tj :+tabnext<CR>
-nnoremap tk :-tabnext<CR>
-nnoremap tmj :+tabmove<CR>
-nnoremap tmk :-tabmove<CR>
+nnoremap tn :+tabnext<CR>
+nnoremap tp :-tabnext<CR>
+nnoremap tmn :+tabmove<CR>
+nnoremap tmp :-tabmove<CR>
 " copy and paste
 "set clipboard=unnamedplus
 vnoremap Y "+y
@@ -145,11 +136,11 @@ nnoremap <leader><CR> :noh<CR>
 nnoremap <leader>vim :tabe ~/.config/nvim/init.vim<CR>
 
 "my tools
-source ~/.config/nvim/tools.vim
+source ~/.config/nvim/usr/tools.vim
 "md-snippets
-source ~/.config/nvim/md-snippets.vim
+source ~/.config/nvim/usr/md-snippets.vim
 "num-key
-source ~/.config/nvim/cursor.vim
+source ~/.config/nvim/usr/cursor.vim
 "study
 source ~/.config/nvim/usr/study/study.vim
 
@@ -171,11 +162,11 @@ Plug 'preservim/nerdcommenter'
 " format
 Plug 'akarl/autoformat.nvim'
 " web
-Plug 'ap/vim-css-color'
+Plug 'norcalli/nvim-colorizer.lua'
 " preview code segment and jump
 Plug 'SmiteshP/nvim-navbuddy'
 " acm
-Plug 'xeluxee/competitest.nvim'
+Plug 'xeluxee/competitest.nvim', { 'for': ['cpp', 'python', 'vim-plug']}
 "-----markdown&note-----
 Plug 'dhruvasagar/vim-table-mode',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'mzlogin/vim-markdown-toc',{ 'for': ['markdown','vimwiki'] }
@@ -191,8 +182,10 @@ Plug 'tpope/vim-surround'
 " search files
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
 " git
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'sindrets/diffview.nvim'
 " more cursors
 Plug 'mg979/vim-visual-multi'
 " open link
@@ -205,17 +198,22 @@ Plug 'kevinhwang91/rnvimr'
 Plug 'junegunn/vim-easy-align'
 "------beautify-------
 " start page
-Plug 'mhinz/vim-startify'
+Plug 'willothy/veil.nvim'
 " notify
 Plug 'rcarriga/nvim-notify'
 " lines and bar
-Plug 'shellRaining/hlchunk.nvim'
+"Plug 'LucasTavaresA/simpleIndentGuides.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'yaocccc/nvim-hlchunk'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'mg979/vim-xtabline'
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kevinhwang91/nvim-hlslens'
+Plug 'utilyre/barbecue.nvim'
+Plug 'm4xshen/smartcolumn.nvim'
 " theme
-Plug 'morhetz/gruvbox'
+Plug 'Kicamon/gruvbox'
+"Plug 'ellisonleao/gruvbox.nvim'
 " icons
 Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-web-devicons'
@@ -235,67 +233,83 @@ call plug#end()
 "====================================
 
 "=====beautify=====
-"-----vim-startify-----
-let g:startify_custom_header = [
-			\ '   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
-			\ '   ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
-			\ '   ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
-			\ '   ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
-			\ '   ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
-			\ '   ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
-            \]
-let g:startify_custom_footer = [
-            \ '   ╭──────────────────────────────╮',
-            \ '   │        Just for Fun!         │',
-            \ '   ╰──────────────────────────────╯',
-            \]
-let g:startify_files_number = 5
-let g:startify_custom_indices = map(range(1,100), 'string(v:val)')
 
-"--- hlchunk ---
+"----theme and highlight----
+colorscheme gruvbox
+
+"----- veil.nvim -----
+"lua require('veil').setup()
 lua << EOF
-require('hlchunk').setup({
-	chunk = {
-		enable = true,
-		notify = true,
-		support_filetypes = {
-			"*.lua",
-			"*.js",
-			"*.cpp",
-			"*.c",
-			"*.py",
-		},
-		use_treesitter = false,
-		chars = {
-			horizontal_line = "━",
-			vertical_line = "┃",
-			left_top = "┏",
-			left_bottom = "┗",
-			right_arrow = ">",
-		},
-		style = {
-			{ fg = "#00FFFF" },
-		},
-	},
-	indent = {
-		chars = { "┃", "┃", "┃", },
+local builtin = require("veil.builtin")
 
-		style = {
-			"#00BFFF",
-			"#B0E0E6",
-			"#FF69B4",
-		},
-	},
-	line_num = {
-		enable = true,
-		use_treesitter = false,
-		style = "#FFFF00",
-	},
-	blank = {
-		enable = false,
-	},
+require('veil').setup({
+  sections = {
+    builtin.sections.animated(builtin.headers.frames_nvim, {
+      hl = { fg = "#5de4c7" },
+    }),
+    builtin.sections.buttons({
+      {
+        icon = "",
+        text = "Find Files",
+        shortcut = "fdf",
+        callback = function()
+            require("telescope.builtin").find_files()
+        end,
+      },
+      {
+        icon = "",
+        text = "Find Word",
+        shortcut = "fdw",
+        callback = function()
+            require("telescope.builtin").live_grep()
+        end,
+      },
+      {
+        icon = "",
+        text = "Buffers",
+        shortcut = "buf",
+        callback = function()
+            require("telescope.builtin").buffers()
+        end,
+      },
+      {
+        icon = "",
+        text = "Config",
+        shortcut = "vim",
+        callback = function()
+          require("telescope").extensions.file_browser.file_browser({
+            path = vim.fn.stdpath("config"),
+          })
+        end,
+      },
+    }),
+    --builtin.sections.oldfiles(),
+  },
+  mappings = {},
+  startup = true,
+  listed = false,
 })
 EOF
+
+"--- simpleIndentGuides ---
+"lua require("simpleIndentGuides").setup("┃")
+"----indent-blackline.nvim----
+highlight IndentBlanklineIndent1 guifg=#00BFFF gui=nocombine
+highlight IndentBlanklineIndent2 guifg=#B0E0E6 gui=nocombine
+highlight IndentBlanklineIndent3 guifg=#FF69B4 gui=nocombine
+let g:indent_blankline_char = '┃'
+lua << EOF
+require("indent_blankline").setup {
+    char_highlight_list = {
+        "IndentBlanklineIndent1",
+        "IndentBlanklineIndent2",
+        "IndentBlanklineIndent3",
+    },
+}
+EOF
+"--- nvim-hlchunk ---
+let g:hlchunk_files = '*.ts,*.js,*.json,*.go,*.c,*.cpp,*.rs,*.h,*.hpp,*.lua,*.py'
+let g:hlchunk_chars=['━', '━', '┏', '┃', '┗', '━', '>']
 
 "-----lualine----
 lua << EOF
@@ -307,21 +321,23 @@ local lualine = require('lualine')
 -- Color table for highlights
 -- stylua: ignore
 local colors = {
-  bg       = '#3c3836',
-  fg       = '#bbc2cf',
-  yellow   = '#F0E68C',
-  cyan     = '#008080',
-  darkblue = '#081633',
-  green    = '#afd787',
-  orange   = '#FF8800',
-  violet   = '#a9a1e1',
-  magenta  = '#c678dd',
-  blue     = '#51afef',
-  red      = '#ec5f67',
-  pink     = '#FF69B4',
-  snow     = '#FFFAFA',
-  black    = '#000000',
-  none     = '#282828',
+	bg       = '#3c3836',
+	bglight  = '#504945',
+	bgdark   = '#3f3d3f',
+	fg       = '#bbc2cf',
+	yellow   = '#F0E68C',
+	cyan     = '#008080',
+	darkblue = '#081633',
+	green    = '#afd787',
+	orange   = '#FF8800',
+	violet   = '#a9a1e1',
+	magenta  = '#c678dd',
+	blue     = '#51afef',
+	red      = '#ec5f67',
+	pink     = '#FF69B4',
+	snow     = '#FFFAFA',
+	black    = '#000000',
+	none     = '#282828',
 }
 
 local conditions = {
@@ -472,48 +488,70 @@ ins_left {
 		['!'] = colors.red,
 		t = colors.red,
 	}
-	return { fg = mode_color[vim.fn.mode()], gui='bold' }
+	return { fg = mode_color[vim.fn.mode()], bg = colors.bgdark, gui='bold' }
 	end,
-	padding = { left = 0}
+	padding = { left = 0, right = 0 }
 }
 
 ins_left {
 	function()
+		mode2 = ""
+	 -- if(vim.g.input_toggle == 0) then
+	 -- 	mode2 = mode2 .. "汉"
+	 -- else
+	 -- 	mode2 = mode2 .. "󰌓 "
+	 -- end
 		if(vim.wo.spell) then
-			return "SPELL"
-		else
-			return ""
+			mode2 = mode2 .. "󰓆 "
 		end
+		if(vim.wo.wrap) then
+			mode2 = mode2 .. "󰖶 "
+		end
+		return mode2
 	end,
-	icon = '󰓆',
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.red, gui = 'bold' },
+	color = { fg = colors.yellow, bg = colors.bgdark, gui = 'bold' },
+	padding = { left = 1, right = 0},
+}
+
+ins_left {
+	'branch',
+	icon = '',
+	color = { fg = colors.violet, bg = colors.bgdark, gui = 'bold' },
 }
 
 ins_left {
 	function()
-		return 'SIZE: '
+		return ''
 	end,
-	color = { fg = colors.red, gui = 'bold' }, -- Sets highlighting of component
-	padding = { left = 1, right = 0 }
+	color = { fg = colors.bgdark, bg = colors.bglight },
+	padding = {left = 0 },
 }
 
 ins_left {
-	'filesize',
-	cond = conditions.buffer_not_empty,
-	padding = { left = 0 }
-}
-
-ins_left {
-  'diagnostics',
-  sources = { 'nvim_diagnostic' },
-  symbols = { error = ' ', warn = ' ', info = ' ' },
-  diagnostics_color = {
-	color_error = { fg = colors.red },
-	color_warn = { fg = colors.yellow },
-	color_info = { fg = colors.cyan },
+  'diff',
+  -- Is it me or the symbol for modified us really weird
+  symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
+  diff_color = {
+	added = { fg = colors.green },
+	modified = { fg = colors.orange },
+	removed = { fg = colors.red },
   },
+  cond = conditions.hide_in_width,
+  color = { bg = colors.bglight },
 }
+
+ins_left {
+	function()
+		return ''
+	end,
+	color = { fg = colors.bglight },
+	padding = { left = 0 },
+}
+
+--ins_left {
+--	'windows'
+--}
 
 -- Insert mid section. You can make any number of sections in neovim :)
 -- for lualine it's any number greater then 2
@@ -521,13 +559,6 @@ ins_left {
   function()
 	return '%='
   end,
-}
-
-ins_left {
-	'hostname',
-	icon = vim.g.User .. ' at',
-	cond = conditions.buffer_not_empty,
-	color = { fg = colors.pink, gui = 'bold' },
 }
 
 ins_right {
@@ -552,40 +583,44 @@ ins_right {
 }
 
 ins_right {
-  'branch',
-  icon = '',
-  color = { fg = colors.violet, gui = 'bold' },
+	function()
+		return ''
+	end,
+	padding = { left = 1, right = 0 },
+	color = { fg = colors.bgdark, gui = 'bold' },
+	padding = { right = 0},
 }
 
 ins_right {
-  'diff',
-  -- Is it me or the symbol for modified us really weird
-  symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
-  diff_color = {
-	added = { fg = colors.green },
-	modified = { fg = colors.orange },
-	removed = { fg = colors.red },
-  },
-  cond = conditions.hide_in_width,
+  'diagnostics',
+  sources = { 'nvim_diagnostic', 'coc' },
+  sections = { 'error', 'warn', 'info', 'hint' },
+  symbols = { error = '🤣', warn = '🧐', info = '🫠', hint = '🤔' },
+  diagnostics_color = {
+	  error = { fg = colors.red },
+	  warn = { fg = colors.yellow },
+	  info = { fg = colors.cyan },
+	  hint = { fg = colors.blue },
+	},
+	color = { bg = colors.bgdark },
 }
 
 ins_right {
 	function()
 		return ''
 	end,
-	padding = { right = 0 },
-	color = { fg = colors.green, gui = 'bold' },
+	padding = { left = 0, right = 0 },
+	color = { bg = colors.bgdark, fg = colors.green, gui = 'bold' },
 }
 
 ins_right {
 	'progress',
-	icon = '',
+	icon = {'', align = 'right'},
 	color = { fg = colors.bg, bg = colors.green, gui = 'bold' },
 }
 
 ins_right {
 	'location',
-	icon='',
 	padding = { left = 0, right = 0 },
 	color = { fg = colors.bg, bg = colors.green, gui = 'bold' },
 }
@@ -620,7 +655,7 @@ require("scrollbar").setup({
 	show = true,
 	handle = {
 		text = " ",
-		color = "#928374",
+		color = "#696969",
 		hide_if_all_visible = true,
 	},
 	marks = {
@@ -638,18 +673,19 @@ require("scrollbar").setup({
 EOF
 
 "----- nvim-hlslens ---
-" ==================== nvim-hlslens ====================
 noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
 noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
 noremap * *<Cmd>lua require('hlslens').start()<CR>
-noremap # #<Cmd>lua require('hlslens').start()<CR>
 noremap g* g*<Cmd>lua require('hlslens').start()<CR>
 noremap g# g#<Cmd>lua require('hlslens').start()<CR>
 
-"----theme----
-colorscheme gruvbox
+"------ barbecue -----
+lua require("barbecue").setup()
+
+"smartcolumn
+lua require("smartcolumn").setup()
 
 " =====code=====
 "-----coc.nvim-----
@@ -661,6 +697,7 @@ let g:coc_global_extensions = [
         \ 'coc-json',
         \ 'coc-lua',
         \ 'coc-pairs',
+        \ 'coc-python',
         \ 'coc-pyright',
         \ 'coc-snippets',
         \ 'coc-translator',
@@ -694,37 +731,29 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> <c-p> :call ShowDocumentation()<CR>
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 nmap ts <Plug>(coc-translator-p)
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
+let g:coc_snippet_next = '<c-n>'
+let g:coc_snippet_prev = '<c-p>'
 nmap <F12> :CocCommand explorer<CR>
+let g:snips_author = "Kicamon Ice"
 
 "-----nerdcommenter-----
-"map \c <leader>cc
-map <leader>aa <leader>cu
+let g:NERDCreateDefaultMappings = 0
+nmap <leader>cc <Plug>NERDCommenterToggle
+vmap <leader>cc <Plug>NERDCommenterToggle
 
 "-----autoformat-----
-call autoformat#config('cpp', 
-	\ ['clang-format -style microsoft -'])
-call autoformat#config('c', 
-	\ ['clang-format -style microsoft -'])
-call autoformat#config('python',
-	\ ['autopep8 -'])
+"call autoformat#config('cpp', 
+	"\ ['clang-format -style microsoft -'])
+"call autoformat#config('c', 
+	"\ ['clang-format -style microsoft -'])
 call autoformat#config('html',
     \ ['html-beautify -s 2'])
 autocmd! BufWritePre * :Autoformat
-nnoremap <C-S-i> :call AutoFormat()<CR>
-func! AutoFormat()
+nnoremap \f :call AutoFormat()<CR>
+func!  AutoFormat()
     if &filetype == "markdown" || &filetype == "vimwiki"
         :TableModeToggle
     else
@@ -733,142 +762,25 @@ func! AutoFormat()
 	exec "w"
 endfunction
 
+"---- nvim-colorizer ----
+lua require'colorizer'.setup()
+
 "----- nvim-lspconfig ----
 lua << EOF
-	require'lspconfig'.clangd.setup{}
-	require'lspconfig'.pyright.setup{}
+local lspconfig = ('nvim-lspconfig')
+require'lspconfig'.clangd.setup{}
+require'lspconfig'.pyright.setup{}
 EOF
 
 "-----nvim-navbuddy-----
-lua <<EOF
+lua << EOF
 local navbuddy = require("nvim-navbuddy")
 local actions = require("nvim-navbuddy.actions")
 navbuddy.setup {
-    window = {
-        border = "single",  -- "rounded", "double", "solid", "none"
-                            -- or an array with eight chars building up the border in a clockwise fashion
-                            -- starting with the top-left corner. eg: { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }.
-        size = "60%",       -- Or table format example: { height = "40%", width = "100%"}
-        position = "50%",   -- Or table format example: { row = "100%", col = "0%"}
-        scrolloff = nil,    -- scrolloff value within navbuddy window
-        sections = {
-            left = {
-                size = "20%",
-                border = nil, -- You can set border style for each section individually as well.
-            },
-            mid = {
-                size = "40%",
-                border = nil,
-            },
-            right = {
-                -- No size option for right most section. It fills to
-                -- remaining area.
-                border = nil,
-                preview = "leaf",  -- Right section can show previews too.
-                                   -- Options: "leaf", "always" or "never"
-            }
-        },
-    },
-    node_markers = {
-        enabled = true,
-        icons = {
-            leaf = "  ",
-            leaf_selected = " → ",
-            branch = " ",
-        },
-    },
-    icons = {
-        File          = "󰈙 ",
-        Module        = " ",
-        Namespace     = "󰌗 ",
-        Package       = " ",
-        Class         = "󰌗 ",
-        Method        = "󰆧 ",
-        Property      = " ",
-        Field         = " ",
-        Constructor   = " ",
-        Enum          = "󰕘",
-        Interface     = "󰕘",
-        Function      = "󰊕 ",
-        Variable      = "󰆧 ",
-        Constant      = "󰏿 ",
-        String        = " ",
-        Number        = "󰎠 ",
-        Boolean       = "◩ ",
-        Array         = "󰅪 ",
-        Object        = "󰅩 ",
-        Key           = "󰌋 ",
-        Null          = "󰟢 ",
-        EnumMember    = " ",
-        Struct        = "󰌗 ",
-        Event         = " ",
-        Operator      = "󰆕 ",
-        TypeParameter = "󰊄 ",
-    },
-    use_default_mappings = true,            -- If set to false, only mappings set
-                                            -- by user are set. Else default
-                                            -- mappings are used for keys
-                                            -- that are not set by user
-    mappings = {
-        ["<esc>"] = actions.close(),        -- Close and cursor to original location
-        ["q"] = actions.close(),
-
-        ["j"] = actions.next_sibling(),     -- down
-        ["k"] = actions.previous_sibling(), -- up
-
-        ["h"] = actions.parent(),           -- Move to left panel
-        ["l"] = actions.children(),         -- Move to right panel
-        ["0"] = actions.root(),             -- Move to first panel
-
-        ["v"] = actions.visual_name(),      -- Visual selection of name
-        ["V"] = actions.visual_scope(),     -- Visual selection of scope
-
-        ["y"] = actions.yank_name(),        -- Yank the name to system clipboard "+
-        ["Y"] = actions.yank_scope(),       -- Yank the scope to system clipboard "+
-
-        ["i"] = actions.insert_name(),      -- Insert at start of name
-        ["I"] = actions.insert_scope(),     -- Insert at start of scope
-
-        ["a"] = actions.append_name(),      -- Insert at end of name
-        ["A"] = actions.append_scope(),     -- Insert at end of scope
-
-        ["r"] = actions.rename(),           -- Rename currently focused symbol
-
-        ["d"] = actions.delete(),           -- Delete scope
-
-        ["f"] = actions.fold_create(),      -- Create fold of current scope
-        ["F"] = actions.fold_delete(),      -- Delete fold of current scope
-
-        ["c"] = actions.comment(),          -- Comment out current scope
-
-        ["<enter>"] = actions.select(),     -- Goto selected symbol
-        ["o"] = actions.select(),
-
-        ["J"] = actions.move_down(),        -- Move focused node down
-        ["K"] = actions.move_up(),          -- Move focused node up
-
-        ["t"] = actions.telescope({         -- Fuzzy finder at current level.
-            layout_config = {               -- All options that can be
-                height = 0.60,              -- passed to telescope.nvim's
-                width = 0.60,               -- default can be passed here.
-                prompt_position = "top",
-                preview_width = 0.50
-            },
-            layout_strategy = "horizontal"
-        }),
-
-        ["g?"] = actions.help(),            -- Open mappings help window
-    },
     lsp = {
         auto_attach = true,   -- If set to true, you don't need to manually use attach function
         preference = nil,      -- list of lsp server names in order of preference
     },
-    source_buffer = {
-        follow_node = true,    -- Keep the current node in focus on the source buffer
-        highlight = true,      -- Highlight the currently focused node
-        reorient = "smart",    -- "smart", "top", "mid" or "none"
-        scrolloff = nil        -- scrolloff value when navbuddy is open
-    }
 }
 EOF
 nmap \n :Navbuddy<CR>
@@ -877,13 +789,30 @@ nmap \n :Navbuddy<CR>
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
 	-- one of "all", "language", or a list of languages
-	ensure_installed = {"typescript", "dart", "java", "c", "cpp", "prisma", "bash", "go"},
+	ensure_installed = {"typescript", "dart",  "c", "cpp", "bash", "go"},
 	highlight = {
-		enable = false,              -- false will disable the whole extension
-		disable = { "rust" },  -- list of language that will be disabled
+		enable = true,              -- false will disable the whole extension
+		disable = { "rust", "python", "cpp" },  -- list of language that will be disabled
 	},
 }
 EOF
+
+"-----semshi-----
+hi semshiLocal           ctermfg=209 guifg=#ff875f
+hi semshiGlobal          ctermfg=214 guifg=#ffaf00
+hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
+hi semshiParameter       ctermfg=75  guifg=#5fafff
+hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline gui=underline
+hi semshiFree            ctermfg=218 guifg=#ffafd7
+hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
+hi semshiAttribute       ctermfg=49  guifg=#00ffaf
+hi semshiSelf            ctermfg=249 guifg=#b2b2b2
+hi semshiUnresolved      ctermfg=226 guifg=#ffff00 cterm=underline gui=underline
+hi semshiSelected        ctermfg=231 guifg=#EFEFEF ctermbg=161 guibg=#88ABDA
+
+hi semshiErrorSign       ctermfg=231 guifg=#ffffff ctermbg=160 guibg=#d70000
+hi semshiErrorChar       ctermfg=231 guifg=#ffffff ctermbg=160 guibg=#d70000
+sign define semshiError text=E> texthl=semshiErrorSign
 
 "-----rainbow-----
 " 1. vscode defult 2. author defult 3. vscode show
@@ -927,9 +856,9 @@ autocmd FileType markdown set wrap
 " disable default key mappings
 let g:vim_markdown_no_default_key_mappings = 1
 let g:mkdp_browser='chromium'
+autocmd FileType markdown let g:mkdp_theme = 'dark'
 "tabe
 autocmd FileType markdown let g:table_mode_corner='|'
-autocmd FileType markdown let g:mkdp_theme = 'dark'
 "toc
 autocmd FileType markdown nnoremap <buffer> toc :GenTocGitLab<CR>
 " images
@@ -991,6 +920,10 @@ nnoremap <LEADER>gb :Gitsigns blame_line<CR>
 nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>
 nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 
+"---- diffview ----
+nnoremap <leader>do :DiffviewOpen<CR>
+nnoremap <leader>dc :DiffviewClose<CR>
+
 "-----link-visitor----
 lua << EOF
 require("link-visitor").setup({
@@ -1004,6 +937,9 @@ nnoremap gl :VisitLinkUnderCursor<CR>
 
 "----rnvimr----
 nnoremap <leader>R :RnvimrToggle<CR>
+
+"---- undotree ---
+nnoremap L :UndotreeToggle<CR>
 
 "-----vim-easy-align---
 xmap ga <Plug>(EasyAlign)

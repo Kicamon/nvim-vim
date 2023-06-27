@@ -5,5 +5,7 @@ len=`expr length ${osname}`
 osname=`expr substr "$osname" 4 4`
 if [ "$osname" == "arch" ]
 then
-	sudo pacman -S clang nodejs python yarn npm autopep8 js-beautify lua python-pynvim
+	sudo pacman -S autopep8 clang js-beautify lua nodejs npm python pyright python-pynvim yarn
 fi
+
+cp ~/.config/nvim/usr/format ~/

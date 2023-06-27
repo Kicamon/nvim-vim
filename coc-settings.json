@@ -2,17 +2,14 @@
 	"suggest.floatConfig": {
 		"border": true,
 		"rounded": true,
-		"focusable": false
 	},
 	"diagnostic.floatConfig": {
 		"border": true,
 		"rounded": true,
-		"focusable": false
 	},
 	"floatFactory.floatConfig": {
 		"border": true,
 		"rounded": true,
-		"focusable": false
 	},
 	"snippets.ultisnips.pythonPrompt": false,
 	"coc.preferences.extensionUpdateCheck": "daily",
@@ -49,8 +46,8 @@
 	"diagnostic.signOffset": 1,
 	"diagnostic.errorSign": "🤣",
 	"diagnostic.warningSign": "🧐",
-	"diagnostic.infoSign": " ",
-	"diagnostic.hintSign": "󱅯 ",
+	"diagnostic.infoSign": "🫠",
+	"diagnostic.hintSign": "🤔",
 	"diagnostic.displayByAle": false,
 	"diagnostic.refreshOnInsertMode": false,
 	"diagnostic.checkCurrentLine": true,
@@ -60,7 +57,10 @@
 	"texlab.forwardSearch.executable": "sioyek",
 	"coc.preferences.formatOnSaveFiletypes": [
 		"json",
-		"vimscript"
+		"vimscript",
+		"python",
+		"cpp",
+		"c"
 	],
 	"texlab.forwardSearch.args": [
 		"%p",
@@ -68,6 +68,25 @@
 	],
 	"texlab.build.onSave": true,
 	"snippets.ultisnips.directories": [
+		"$HOME/.config/nvim/plugged/vim-snippets/UltiSnips",
 		"$HOME/.config/nvim/usr/Ultisnips/"
-	]
+	],
+	"explorer.position": "right",
+	"explorer.width": 30,
+	"explorer.quitOnOpen": true,
+	"explorer.sources": [
+		{
+			"name": "buffer",
+			"expand": false
+		},
+		{
+			"name": "file",
+			"expand": true
+		}
+	],
+	"explorer.file.column.indent.indentLine": true,
+	"explorer.file.showHiddenFiles": true,
+	"explorer.icon.enableNerdfont": true,
+	"explorer.file.column.git.showIgnored": true,
+	"explorer.buffer.showHiddenBuffers": false
 }
