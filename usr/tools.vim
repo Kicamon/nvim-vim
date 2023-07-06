@@ -10,7 +10,7 @@ func! Run()
 		else
 			set splitbelow
 			:sp
-			term gcc % -o %< && ./%< && rm -f ./%<
+			term gcc "%" -o "%<" && "./%<" && rm -f "./%<"
 		endif
     elseif &filetype == "cpp"
 		if filereadable('Makefile')
@@ -20,16 +20,16 @@ func! Run()
 		else
 			set splitbelow
 			:sp
-			term g++ % -std=c++17 -O2 -g -Wall -o %< && ./%< && rm -f ./%<
+			term g++ "%" -std=c++17 -O2 -g -Wall -o "%<" && "./%<" && rm -f "./%<"
 		endif
 	elseif &filetype == "python"
         set splitbelow
         :sp
-        term python3 %
+        term python3 "%"
     elseif &filetype == "lua"
         set splitbelow
         :sp
-        term lua %
+        term lua "%"
     elseif &filetype == 'markdown'
         exec "MarkdownPreview"
     elseif &filetype == 'vimwiki'
@@ -43,7 +43,7 @@ func! Run()
     elseif &filetype == 'sh'
 		set splitbelow
 		:sp
-		term bash %
+		term bash "%"
     endif
 endfunction
 
@@ -53,10 +53,10 @@ func! Delete()
 		:! make clean
 		:lua require("notify")("󰆴 Clearance completed")
 	elseif &filetype == "tex"
-		:! rm -f ./%<.aux && rm -f ./%<.fdb_latexmk && rm -f ./%<.fls && rm -f ./%<.log && rm -f ./%<.synctex.gz
+		:! rm -f "./%<".aux && rm -f "./%<".fdb_latexmk && rm -f "./%<".fls && rm -f "./%<".log && rm -f "./%<".synctex.gz
 		:lua require("notify")("󰆴 Clearance completed")
 	else
-		:! rm -f ./%< && rm -f ./%<_*.txt
+		:! rm -f "./%<" && rm -f "./%<"_*.txt
 		:lua require("notify")("󰆴 Test Samples Delete completed")
 	endif
 endfunction
@@ -74,18 +74,17 @@ function! Fcitx5en()
     let s:input_status = system("fcitx5-remote")
     if s:input_status == 2
         let g:input_toggle = 1
-        let l:a = system("fcitx5-remote -c")
+		let l:a = system("fcitx5-remote -c")
     endif
 endfunction
 
 function! Fcitx5zh()
         let s:input_status = system("fcitx5-remote")
         if s:input_status != 2 && g:input_toggle == 1
-            let l:a = system("fcitx5-remote -o")
+			let l:a = system("fcitx5-remote -o")
             let g:input_toggle = 0
         endif
 endfunction
-set ttimeoutlen=150
 "退出插入模式
 autocmd InsertLeave * call Fcitx5en()
 "进入插入模式

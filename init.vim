@@ -7,10 +7,10 @@
 " ╚═╝     ╚═╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
 "============================================
 
-"get username
-let g:User=system('echo -n $USER')
+"user information
+source ~/.config/nvim/usr/UserInformation.vim
 "auto load
-if empty(glob($HOME.'/.config/nvim/tmp'))
+if empty(glob($NVIM.'/tmp'))
     silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 			    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     silent :! mkdir -p ~/.config/nvim/tmp/undo
@@ -61,13 +61,13 @@ set scrolloff=6
 " wrap line
 set colorcolumn=80
 "window line
-set fillchars=vert:\│
+set fillchars=vert:\║
 "cmd
 set cmdheight=1
 set noshowmode
 " undo
 set undofile
-set undodir=~/.config/nvim/tmp/undo
+set undodir=$NVIM/tmp/undo
 " cursor place last time
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 " auto change dir
@@ -97,8 +97,7 @@ nmap smh <C-w>t<c-W>K
 autocmd TermOpen term://* startinsert
 tnoremap <C-n> <C-\><C-N>
 tnoremap <C-o> <C-\><C-N><C-O>
-" wrap
-nmap <leader>sw :set wrap!<CR>
+"cursor move
 nnoremap <expr>j (v:count==0?"gj":"j")
 nnoremap <expr>k (v:count==0?"gk":"k")
 " change buffers & tabs
@@ -106,15 +105,29 @@ nnoremap [b :bp<CR>
 nnoremap ]b :bn<CR>
 nnoremap tu :tabe<CR>:edit<space>
 nnoremap tU :tab split<CR>
-nnoremap tn :+tabnext<CR>
-nnoremap tp :-tabnext<CR>
-nnoremap tmn :+tabmove<CR>
-nnoremap tmp :-tabmove<CR>
+nnoremap tj :+tabnext<CR>
+nnoremap tk :-tabnext<CR>
+nnoremap tmj :+tabmove<CR>
+nnoremap tmk :-tabmove<CR>
+nnoremap <A-1> 1gt<CR>
+nnoremap <A-2> 2gt<CR>
+nnoremap <A-3> 3gt<CR>
+nnoremap <A-4> 4gt<CR>
+nnoremap <A-5> 5gt<CR>
+nnoremap <A-6> 6gt<CR>
+nnoremap <A-7> 7gt<CR>
+nnoremap <A-8> 8gt<CR>
+nnoremap <A-9> 9gt<CR>
+nnoremap <A-0> 10gt<CR>
 " copy and paste
 "set clipboard=unnamedplus
 vnoremap Y "+y
+"nmap ca ggVGY<C-o>:echo " Copied!"<CR>
+nmap ca :! xclip -sel c "%"<CR><CR>:echo " Copied!"<CR>
 " spell check
 nnoremap <leader>sc :set spell!<CR>
+" wrap
+nnoremap <leader>sw :set wrap!<CR>
 " move
 inoremap <A-l> <Right>
 nnoremap <A-j> <cmd>m .+1<cr>==
@@ -133,19 +146,19 @@ nmap <leader><leader> /<++><CR>:noh<CR>"_c4l
 " cancel search highlight
 nnoremap <leader><CR> :noh<CR>
 " open init
-nnoremap <leader>vim :tabe ~/.config/nvim/init.vim<CR>
+nnoremap <leader>vim :edit $NVIM/init.vim<CR>
 
 "my tools
-source ~/.config/nvim/usr/tools.vim
+source $NVIM/usr/tools.vim
 "md-snippets
-source ~/.config/nvim/usr/md-snippets.vim
+source $NVIM/usr/md-snippets.vim
 "num-key
-source ~/.config/nvim/usr/cursor.vim
+source $NVIM/usr/cursor.vim
 "study
-source ~/.config/nvim/usr/study/study.vim
+source $NVIM/usr/study/study.vim
 
 "====plugin management====
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin($NVIM.'/plugged')
 "-----code-----
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'honza/vim-snippets'
@@ -153,7 +166,6 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'SmiteshP/nvim-navic'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
-Plug 'xeluxee/competitest.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " heilight
 Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': ['python', 'vim-plug'] }
@@ -166,19 +178,25 @@ Plug 'norcalli/nvim-colorizer.lua'
 " preview code segment and jump
 Plug 'SmiteshP/nvim-navbuddy'
 " acm
-Plug 'xeluxee/competitest.nvim', { 'for': ['cpp', 'python', 'vim-plug']}
+Plug 'xeluxee/competitest.nvim', { 'for': ['cpp', 'veil', 'vim-plug']}
 "-----markdown&note-----
 Plug 'dhruvasagar/vim-table-mode',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
-Plug 'mzlogin/vim-markdown-toc',{ 'for': ['markdown','vimwiki'] }
+Plug 'mzlogin/vim-markdown-toc',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'img-paste-devs/img-paste.vim',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'dkarter/bullets.vim',{ 'for': ['markdown','vimwiki', 'vim-plug'] }
 Plug 'vimwiki/vimwiki'
 "-------edit------
+"auto pairs
+Plug 'windwp/nvim-autopairs'
 " quick chose text
 Plug 'gcmt/wildfire.vim'
 " change the characters wrapping words
 Plug 'tpope/vim-surround'
+" more cursors
+Plug 'mg979/vim-visual-multi'
+" auto alignment
+Plug 'junegunn/vim-easy-align'
 " search files
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -186,16 +204,12 @@ Plug 'nvim-telescope/telescope-file-browser.nvim'
 " git
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'sindrets/diffview.nvim'
-" more cursors
-Plug 'mg979/vim-visual-multi'
 " open link
 Plug 'xiyaowong/link-visitor.nvim'
 " undo tree
 Plug 'mbbill/undotree'
 " float ranger
 Plug 'kevinhwang91/rnvimr'
-" auto alignment
-Plug 'junegunn/vim-easy-align'
 "------beautify-------
 " start page
 Plug 'willothy/veil.nvim'
@@ -203,9 +217,8 @@ Plug 'willothy/veil.nvim'
 Plug 'rcarriga/nvim-notify'
 " lines and bar
 "Plug 'LucasTavaresA/simpleIndentGuides.nvim'
-Plug 'lukas-reineke/indent-blankline.nvim'
-Plug 'yaocccc/nvim-hlchunk'
 Plug 'nvim-lualine/lualine.nvim'
+Plug 'shellRaining/hlchunk.nvim'
 Plug 'mg979/vim-xtabline'
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kevinhwang91/nvim-hlslens'
@@ -249,27 +262,19 @@ require('veil').setup({
     }),
     builtin.sections.buttons({
       {
+        icon = "",
+        text = "New File",
+        shortcut = "nfd",
+        callback = function()
+			vim.cmd('bd')
+        end,
+      },
+      {
         icon = "",
         text = "Find Files",
         shortcut = "fdf",
         callback = function()
             require("telescope.builtin").find_files()
-        end,
-      },
-      {
-        icon = "",
-        text = "Find Word",
-        shortcut = "fdw",
-        callback = function()
-            require("telescope.builtin").live_grep()
-        end,
-      },
-      {
-        icon = "",
-        text = "Buffers",
-        shortcut = "buf",
-        callback = function()
-            require("telescope.builtin").buffers()
         end,
       },
       {
@@ -282,8 +287,15 @@ require('veil').setup({
           })
         end,
       },
+      {
+        icon = "",
+        text = "Config",
+        shortcut = "acm",
+        callback = function()
+			vim.cmd('CompetiTestReceive contest')
+        end,
+      },
     }),
-    --builtin.sections.oldfiles(),
   },
   mappings = {},
   startup = true,
@@ -293,23 +305,41 @@ EOF
 
 "--- simpleIndentGuides ---
 "lua require("simpleIndentGuides").setup("┃")
-"----indent-blackline.nvim----
-highlight IndentBlanklineIndent1 guifg=#00BFFF gui=nocombine
-highlight IndentBlanklineIndent2 guifg=#B0E0E6 gui=nocombine
-highlight IndentBlanklineIndent3 guifg=#FF69B4 gui=nocombine
-let g:indent_blankline_char = '┃'
+
+"--- hlchunk.nvim ---
 lua << EOF
-require("indent_blankline").setup {
-    char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-        "IndentBlanklineIndent3",
-    },
-}
+require("hlchunk").setup({
+	chunk = {
+		enable = false,
+	},
+	indent = {
+		enable = true,
+		use_treesitter = false,
+		chars = {
+			"┃",
+		},
+		style = {
+			'#00BFFF',
+			'#B0E0E6',
+			'#FF69B4',
+		},
+	},
+	line_num = {
+		enable = true,
+		style = "#FFD700",
+	},
+	blank = {
+    enable = false,
+		chars = {
+			"█",
+		},
+		style = {
+			"#000000",
+			"#0a0a0a"
+		}
+  }
+})
 EOF
-"--- nvim-hlchunk ---
-let g:hlchunk_files = '*.ts,*.js,*.json,*.go,*.c,*.cpp,*.rs,*.h,*.hpp,*.lua,*.py'
-let g:hlchunk_chars=['━', '━', '┏', '┃', '┗', '━', '>']
 
 "-----lualine----
 lua << EOF
@@ -695,9 +725,8 @@ let g:coc_global_extensions = [
         \ 'coc-flutter',
         \ 'coc-html',
         \ 'coc-json',
-        \ 'coc-lua',
-        \ 'coc-pairs',
-        \ 'coc-python',
+		\ 'coc-marketplace',
+        \ 'coc-nelua',
         \ 'coc-pyright',
         \ 'coc-snippets',
         \ 'coc-translator',
@@ -734,10 +763,10 @@ nmap <silent> gr <Plug>(coc-references)
 autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 nmap ts <Plug>(coc-translator-p)
-let g:coc_snippet_next = '<c-n>'
-let g:coc_snippet_prev = '<c-p>'
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
 nmap <F12> :CocCommand explorer<CR>
-let g:snips_author = "Kicamon Ice"
+let g:snips_author = g:User
 
 "-----nerdcommenter-----
 let g:NERDCreateDefaultMappings = 0
@@ -845,17 +874,18 @@ let g:rainbow_active = 1
 
 "----competitest----
 lua require('competitest').setup()
-autocmd FileType cpp,python nnoremap rr :CompetiTestRun<CR>
-autocmd FileType cpp,python nnoremap ra :CompetiTestAdd<CR>
-autocmd FileType cpp,python nnoremap re :CompetiTestEdit<CR>
-autocmd FileType cpp,python nnoremap ri :CompetiTestReceive testcases<CR>
-autocmd FileType cpp,python nnoremap rd :CompetiTestDelete<CR>
+autocmd FileType cpp nnoremap <buffer> rr :CompetiTestRun<CR>
+autocmd FileType cpp nnoremap <buffer> ra :CompetiTestAdd<CR>
+autocmd FileType cpp nnoremap <buffer> re :CompetiTestEdit<CR>
+autocmd FileType cpp nnoremap <buffer> ri :CompetiTestReceive testcases<CR>
+autocmd FileType cpp nnoremap <buffer> rd :CompetiTestDelete<CR>
+"autocmd FileType veil nnoremap <buffer> acm :CompetiTestReceive contest<CR>
 
 "-----markdown-----
 autocmd FileType markdown set wrap
 " disable default key mappings
 let g:vim_markdown_no_default_key_mappings = 1
-let g:mkdp_browser='chromium'
+let g:mkdp_browser=g:browser
 autocmd FileType markdown let g:mkdp_theme = 'dark'
 "tabe
 autocmd FileType markdown let g:table_mode_corner='|'
@@ -890,11 +920,18 @@ let g:bullets_custom_mappings = [
 	\ ['imap', '<C-->', '<Plug>(bullets-promote)'],
 	\ ]
 
-"----vinwiki----
+"----vimwiki----
 let g:vimwiki_list = [{'path': '~/Documents/study/Note/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_global_ext = 0
 autocmd FileType vimwiki set wrap
+
+"-----nvim-autopairs----
+lua << EOF
+	require("nvim-autopairs").setup({
+		map_cr = false,
+	})
+EOF
 
 "-----telescope.nvim-----
 nnoremap <leader>ff :Telescope find_files<CR>

@@ -60,7 +60,8 @@
 		"vimscript",
 		"python",
 		"cpp",
-		"c"
+		"c",
+		"lua"
 	],
 	"texlab.forwardSearch.args": [
 		"%p",
@@ -88,5 +89,41 @@
 	"explorer.file.showHiddenFiles": true,
 	"explorer.icon.enableNerdfont": true,
 	"explorer.file.column.git.showIgnored": true,
-	"explorer.buffer.showHiddenBuffers": false
+	"explorer.buffer.showHiddenBuffers": false,
+	"languageserver": {
+		"lua": {
+			"command": "/usr/bin/lua-language-server",
+			"args": [
+				"-E",
+				"/home/alanjui/.local/share/lua-language-server/bin/Linux/main.lua"
+			],
+			"filetypes": [
+				"lua"
+			],
+			"settings": {
+				"Lua": {
+					"workspace.library": {
+						"/usr/share/nvim/runtime/lua": true,
+						"/usr/share/nvim/runtime/lua/vim": true,
+						"/usr/share/nvim/runtime/lua/vim/lsp": true
+					},
+					"diagnostics": {
+						"globals": [
+							"vim"
+						]
+					}
+				}
+			}
+		},
+		"bash": {
+			"command": "bash-language-server",
+			"args": [
+				"start"
+			],
+			"filetypes": [
+				"sh"
+			],
+			"ignoredRootPaths": []
+		}
+	}
 }
