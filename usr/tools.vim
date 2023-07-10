@@ -4,47 +4,59 @@ func! Run()
 	exec "w"
 	if &filetype == 'c'
 		if filereadable('Makefile')
-			set splitbelow
+			:set splitbelow
 			:sp
+			:res +5
 			term make && ./Main
 		else
-			set splitbelow
+			:set splitbelow
 			:sp
+			:res +5
 			term gcc "%" -o "%<" && "./%<" && rm -f "./%<"
 		endif
-    elseif &filetype == "cpp"
+	elseif &filetype == "cpp"
 		if filereadable('Makefile')
-			set splitbelow
+			:set splitbelow
 			:sp
+			:res +5
 			term make && ./Main
 		else
-			set splitbelow
+			:set splitbelow
 			:sp
+			:res +5
 			term g++ "%" -std=c++17 -O2 -g -Wall -o "%<" && "./%<" && rm -f "./%<"
 		endif
 	elseif &filetype == "python"
-        set splitbelow
-        :sp
-        term python3 "%"
-    elseif &filetype == "lua"
-        set splitbelow
-        :sp
-        term lua "%"
-    elseif &filetype == 'markdown'
-        exec "MarkdownPreview"
-    elseif &filetype == 'vimwiki'
-        exec "MarkdownPreview"
-    elseif &filetype == 'html'
-        tabe
-        term live-server --browser=chromium
-        tabclose
-    elseif &filetype == 'tex'
-		exec "CocCommand latex.ForwardSearch"
-    elseif &filetype == 'sh'
+		:set splitbelow
+		:sp
+		:res +5
+		term python3 "%"
+	elseif &filetype == "lua"
+		:set splitbelow
+		:sp
+		:res +5
+		term lua "%"
+	elseif &filetype == "dart"
+		:set splitbelow
+		:sp
+		:res +5
+		term dart "%"
+	elseif &filetype == 'markdown'
+		exec "MarkdownPreview"
+	elseif &filetype == 'vimwiki'
+		exec "MarkdownPreview"
+	elseif &filetype == 'html'
+		tabe
+		term live-server --browser=chromium
+		tabclose
+	elseif &filetype == 'tex'
+	exec "CocCommand latex.ForwardSearch"
+	elseif &filetype == 'sh'
 		set splitbelow
 		:sp
+		:res +5
 		term bash "%"
-    endif
+	endif
 endfunction
 
 nnoremap rm :call Delete()<CR>

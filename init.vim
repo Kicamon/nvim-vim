@@ -36,9 +36,10 @@ set nowrap
 set nu
 set relativenumber
 " tab size
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+autocmd FileType c,cpp,python setlocal shiftwidth=4 | setlocal tabstop=4 | setlocal softtabstop=4
 set autoindent
 set smartindent
 " ignore Uppercase and Lowercase
@@ -167,6 +168,7 @@ Plug 'SmiteshP/nvim-navic'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'dart-lang/dart-vim-plugin', { 'for': ['dart', 'vim-plug'] }
 " heilight
 Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': ['python', 'vim-plug'] }
 " commenter
@@ -720,20 +722,20 @@ lua require("smartcolumn").setup()
 " =====code=====
 "-----coc.nvim-----
 let g:coc_global_extensions = [
-        \ 'coc-clangd',
-        \ 'coc-css',
-        \ 'coc-flutter',
-        \ 'coc-html',
-        \ 'coc-json',
+		\ 'coc-clangd',
+		\ 'coc-css',
+		\ 'coc-flutter',
+		\ 'coc-html',
+		\ 'coc-json',
 		\ 'coc-marketplace',
-        \ 'coc-nelua',
-        \ 'coc-pyright',
-        \ 'coc-snippets',
-        \ 'coc-translator',
-        \ 'coc-texlab',
-        \ 'coc-vimlsp',
-        \ 'coc-explorer',
-      \ ]
+		\ 'coc-nelua',
+		\ 'coc-pyright',
+		\ 'coc-snippets',
+		\ 'coc-translator',
+		\ 'coc-texlab',
+		\ 'coc-vimlsp',
+		\ 'coc-explorer',
+	\ ]
 "set helpfile
 set nobackup
 set nowritebackup
@@ -741,13 +743,13 @@ set pumheight=10
 set updatetime=100
 highlight CocFloating ctermbg=Black
 inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
+	\ coc#pum#visible() ? coc#pum#next(1) :
+	\ CheckBackspace() ? "\<Tab>" :
+	\ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+								\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! CheckBackspace() abort
   let col = col('.') - 1
@@ -792,7 +794,34 @@ func!  AutoFormat()
 endfunction
 
 "---- nvim-colorizer ----
-lua require'colorizer'.setup()
+lua << EOF
+require 'colorizer'.setup()
+--require "colorizer".setup({
+--	opts = {
+--		filetypes = { "*" },
+--		user_default_options = {
+--			RGB = true,       -- #RGB hex codes
+--			RRGGBB = true,    -- #RRGGBB hex codes
+--			names = true,     -- "Name" codes like Blue or blue
+--			RRGGBBAA = false, -- #RRGGBBAA hex codes
+--			AARRGGBB = true,  -- 0xAARRGGBB hex codes
+--			rgb_fn = false,   -- CSS rgb() and rgba() functions
+--			hsl_fn = false,   -- CSS hsl() and hsla() functions
+--			css = false,      -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+--			css_fn = false,   -- Enable all CSS *functions*: rgb_fn, hsl_fn
+--			-- Available modes for `mode`: foreground, background,  virtualtext
+--			mode = "virtualtext", -- Set the display mode.
+--			-- Available methods are false / true / "normal" / "lsp" / "both"
+--			-- True is same as normal
+--			tailwind = true,
+--			sass = { enable = false },
+--			virtualtext = "■",
+--		},
+--		-- all the sub-options of filetypes apply to buftypes
+--		buftypes = {},
+--	}
+--})
+EOF
 
 "----- nvim-lspconfig ----
 lua << EOF

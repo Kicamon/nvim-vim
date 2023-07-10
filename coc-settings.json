@@ -56,12 +56,14 @@
 	"inlayHint.enable": false,
 	"texlab.forwardSearch.executable": "sioyek",
 	"coc.preferences.formatOnSaveFiletypes": [
+		"c",
+		"cpp",
 		"json",
 		"vimscript",
 		"python",
-		"cpp",
-		"c",
-		"lua"
+		"lua",
+		"bash",
+		"dart"
 	],
 	"texlab.forwardSearch.args": [
 		"%p",
