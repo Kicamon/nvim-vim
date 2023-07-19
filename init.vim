@@ -724,6 +724,7 @@ lua require("smartcolumn").setup()
 let g:coc_global_extensions = [
 		\ 'coc-clangd',
 		\ 'coc-css',
+		\ 'coc-ds-pinyin-lsp',
 		\ 'coc-flutter',
 		\ 'coc-html',
 		\ 'coc-json',
@@ -769,6 +770,7 @@ let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 nmap <F12> :CocCommand explorer<CR>
 let g:snips_author = g:User
+nnoremap <c-p> :CocCommand ds-pinyin-lsp.toggle-completion<CR>
 
 "-----nerdcommenter-----
 let g:NERDCreateDefaultMappings = 0

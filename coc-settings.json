@@ -92,6 +92,7 @@
 	"explorer.icon.enableNerdfont": true,
 	"explorer.file.column.git.showIgnored": true,
 	"explorer.buffer.showHiddenBuffers": false,
+	"ds-pinyin-lsp.completion_on": false,
 	"languageserver": {
 		"lua": {
 			"command": "/usr/bin/lua-language-server",
