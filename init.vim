@@ -42,7 +42,7 @@ set softtabstop=2
 autocmd FileType c,cpp,python,text setlocal shiftwidth=4 | setlocal tabstop=4 | setlocal softtabstop=4
 set autoindent
 set smartindent
-autocmd BufEnter *.txt,*.md setlocal expandtab | :%retab!
+autocmd BufEnter *.txt,*.md setlocal expandtab
 " ignore Uppercase and Lowercase
 set ignorecase
 set smartcase
