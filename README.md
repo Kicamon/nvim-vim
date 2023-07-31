@@ -86,11 +86,11 @@ coc.nvim插件使用注意：
 ##### 自动格式化
 ```Vim
 call autoformat#config('cpp', 
-	\ ['clang-format -style microsoft -']) 
+    \ ['clang-format -style microsoft -']) 
 call autoformat#config('c', 
-	\ ['clang-format -style microsoft -']) 
+    \ ['clang-format -style microsoft -']) 
 call autoformat#config('python', 
-	\ ['autopep8 -'])
+    \ ['autopep8 -'])
 call autoformat#config('html', 
     \ ['html-beautify -s 2'])
 autocmd! BufWritePre * :Autoformat
@@ -158,18 +158,18 @@ using namespace std;
 
 signed main()
 {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
+    ios::sync_with_stdio(false);
+    cin.tie(0);
 
-	// clock_t start, finish;
-	// start = clock();
+    // clock_t start, finish;
+    // start = clock();
 
-	${0}
+    ${0}
 
-	// finish = clock();
-	// cout <<endl<<"the time cost is:" << double(finish - start) / CLOCKS_PER_SEC<<endl;
+    // finish = clock();
+    // cout <<endl<<"the time cost is:" << double(finish - start) / CLOCKS_PER_SEC<<endl;
 
-	return 0;
+    return 0;
 }
 endsnippet
 ```

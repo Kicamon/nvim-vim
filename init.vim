@@ -39,9 +39,10 @@ set relativenumber
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
-autocmd FileType c,cpp,python setlocal shiftwidth=4 | setlocal tabstop=4 | setlocal softtabstop=4
+autocmd FileType c,cpp,python,text setlocal shiftwidth=4 | setlocal tabstop=4 | setlocal softtabstop=4
 set autoindent
 set smartindent
+autocmd BufEnter *.txt,*.md setlocal expandtab | :%retab!
 " ignore Uppercase and Lowercase
 set ignorecase
 set smartcase
@@ -220,8 +221,9 @@ Plug 'rcarriga/nvim-notify'
 " lines and bar
 "Plug 'LucasTavaresA/simpleIndentGuides.nvim'
 Plug 'nvim-lualine/lualine.nvim'
-Plug 'shellRaining/hlchunk.nvim'
-Plug 'mg979/vim-xtabline'
+Plug 'shellRaining/hlchunk.nvim', { 'for': ['cpp', 'c', 'python', 'lua','vim-plug'] }
+"Plug 'mg979/vim-xtabline'
+Plug 'akinsho/bufferline.nvim'
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kevinhwang91/nvim-hlslens'
 Plug 'utilyre/barbecue.nvim'
@@ -276,7 +278,7 @@ require('veil').setup({
         text = "Find Files",
         shortcut = "fdf",
         callback = function()
-            require("telescope.builtin").find_files()
+          require("telescope.builtin").find_files()
         end,
       },
       {
@@ -342,6 +344,8 @@ require("hlchunk").setup({
   }
 })
 EOF
+autocmd BufEnter *.txt :DisableHL
+autocmd BufLeave *.txt :EnableHL
 
 "-----lualine----
 lua << EOF
@@ -459,7 +463,7 @@ ins_left {
 		['!'] = colors.red,
 		t = colors.red,
 	}
-	return { fg = mode_color[vim.fn.mode()], gui='bold' }
+	return { bg = colors.none, fg = mode_color[vim.fn.mode()], gui='bold' }
 	end,
 }
 
@@ -670,14 +674,50 @@ lualine.setup(config)
 EOF
 
 "-----xtabline----
-let g:xtabline_settings = {}
-let g:xtabline_settings.enable_mappings = 0
-let g:xtabline_settings.tabline_modes = ['tabs','buffers']
-let g:xtabline_settings.enable_persistance = 0
-let g:xtabline_settings.last_open_first = 0
-let g:xtabline_settings.tab_number_in_left_corner = 0
-let g:xtabline_settings.show_right_corner = 1
-let g:xtabline_settings.theme='slate'
+"let g:xtabline_settings = {}
+"let g:xtabline_settings.enable_mappings = 0
+"let g:xtabline_settings.tabline_modes = ['tabs','buffers']
+"let g:xtabline_settings.enable_persistance = 0
+"let g:xtabline_settings.last_open_first = 0
+"let g:xtabline_settings.tab_number_in_left_corner = 0
+"let g:xtabline_settings.show_right_corner = 1
+"let g:xtabline_settings.theme='slate'
+
+"-----bufferline----
+lua << EOF
+require("bufferline").setup({
+	options = {
+		mode = "tabs",
+		indicator = {
+			icon = '▎', -- this should be omitted if indicator style is not 'icon'
+			-- style = 'icon' | 'underline' | 'none',
+			style = "icon",
+		},
+		numbers = function(opts)
+			local NumberIcon = {
+				"❶ ",
+				"❷ ",
+				"❸ ",
+				"❹ ",
+				"❺ ",
+				"❻ ",
+				"❼ ",
+				"❽ ",
+				"❾ ",
+				"❿ ",
+			}
+			return NumberIcon[tonumber(opts.ordinal)]
+		end,
+		show_buffer_close_icons = false,
+		show_close_icon = false,
+		enforce_regular_tabs = true,
+		show_duplicate_prefix = false,
+		tab_size = 16,
+		padding = 0,
+		separator_style = "thick",
+	}
+})
+EOF
 
 "----- nvim-scrollbar ---
 lua <<EOF
@@ -913,7 +953,7 @@ autocmd FileType cpp nnoremap <buffer> rd :CompetiTestDelete<CR>
 "autocmd FileType veil nnoremap <buffer> acm :CompetiTestReceive contest<CR>
 
 "-----markdown-----
-autocmd FileType markdown set wrap
+autocmd FileType markdown,text set wrap
 " disable default key mappings
 let g:vim_markdown_no_default_key_mappings = 1
 let g:mkdp_browser=g:browser
