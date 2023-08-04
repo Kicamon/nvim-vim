@@ -1,3 +1,6 @@
+# 我现在使用lua来配置nvim
+这是我的[配置文件](https://github.com/Kicamon/nvim)
+
 # My neovim profile
 
 ## 使用之前
